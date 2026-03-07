@@ -33,17 +33,6 @@ namespace CareerPath.DataAccess.Migrations
                 nullable: true,
                 oldClrType: typeof(double),
                 oldType: "double precision");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "leadership_positions",
-                table: "feature_vectors",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(bool),
-                oldType: "boolean");
-
-            migrationBuilder.Sql("ALTER TABLE feature_vectors ALTER COLUMN leadership_positions TYPE integer USING" +
-                                 " (CASE WHEN leadership_positions THEN 1 ELSE 0 END);");
             
 
             migrationBuilder.AlterColumn<double>(
@@ -144,14 +133,7 @@ namespace CareerPath.DataAccess.Migrations
                 oldType: "double precision",
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<bool>(
-                name: "leadership_positions",
-                table: "feature_vectors",
-                type: "boolean",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer");
-
+            
             migrationBuilder.AlterColumn<double>(
                 name: "teamwork_skills",
                 table: "confidence_scores",
