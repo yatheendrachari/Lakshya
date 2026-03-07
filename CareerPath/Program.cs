@@ -82,7 +82,7 @@ builder.Services.AddHttpClient("PythonApi", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["PythonApi:BaseUrl"]
         ?? "http://localhost:8000");
-    client.Timeout = TimeSpan.FromSeconds(60);
+    client.Timeout = TimeSpan.FromSeconds(180);
 });
 
 
