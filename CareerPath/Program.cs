@@ -12,6 +12,7 @@ using CareerPath.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,11 +80,13 @@ builder.Services.AddRazorPages(); // required for Identity scaffolded UI
 // HTTP CLIENT — Python FastAPI backend
 // ---------------------------------------------------------------
 builder.Services.AddHttpClient("PythonApi", client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["PythonApi:BaseUrl"]
-        ?? "http://localhost:8000");
-    client.Timeout = TimeSpan.FromSeconds(180);
-});
+    {
+        client.BaseAddress = new Uri(builder.Configuration["PythonApi:BaseUrl"]
+                                     ?? "https://lakshya-api.onrender.com");
+        client.Timeout = TimeSpan.FromSeconds(120);
+    })
+    .AddTransientHttpErrorPolicy(p => 
+        p.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(5)));
 
 
 // ---------------------------------------------------------------
