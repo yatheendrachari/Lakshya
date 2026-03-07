@@ -42,6 +42,10 @@ namespace CareerPath.DataAccess.Migrations
                 oldClrType: typeof(bool),
                 oldType: "boolean");
 
+            migrationBuilder.Sql("ALTER TABLE feature_vectors ALTER COLUMN leadership_positions TYPE integer USING" +
+                                 " (CASE WHEN leadership_positions THEN 1 ELSE 0 END);");
+            
+
             migrationBuilder.AlterColumn<double>(
                 name: "teamwork_skills",
                 table: "confidence_scores",
