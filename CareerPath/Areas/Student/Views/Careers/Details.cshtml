@@ -1,0 +1,268 @@
+
+
+@model CareerPath.Models.ViewModels.CareerDetailViewModel
+
+<!-- TEMPDATA ERROR ALERT — shown when gap analysis fails or profile is missing -->
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+        <span>&#9888; @TempData["Error"]</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- BREADCRUMB -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Student/Careers">Career Catalog</a></li>
+        <li class="breadcrumb-item active">@Model.CareerName</li>
+    </ol>
+</nav>
+
+<!-- MAIN TWO COLUMN LAYOUT -->
+<div class="row g-0" style="min-height: calc(100vh - 120px);">
+
+    <!-- ===================== LEFT — 3/4 CAREER DETAIL ===================== -->
+    <div class="col-lg-9 pe-4 border-end">
+
+        <!-- CAREER HEADER -->
+        <div class="d-flex align-items-start gap-3 mb-4 pb-4 border-bottom">
+            <div class="rounded-3 p-3 bg-primary bg-opacity-10 fs-2">
+                @Model.FieldIcon
+            </div>
+            <div class="flex-grow-1">
+                <h1 class="fw-bold mb-1">@Model.CareerName</h1>
+                <p class="text-muted mb-2">@Model.Field &middot; @Model.SubField</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-success bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2">@Model.Field</span>
+                    <span class="badge bg-primary bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2">@Model.DemandLevel Demand</span>
+                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-3 py-2">@Model.ExperienceLevel</span>
+                    <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-2">@Model.WorkMode</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card border text-center p-3">
+                    <div class="fs-4 fw-bold text-primary mb-1">@Model.AverageSalary</div>
+                    <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing:0.05em;">Avg. Salary</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border text-center p-3">
+                    <div class="fs-4 fw-bold text-success mb-1">@Model.JobOpenings</div>
+                    <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing:0.05em;">Job Openings</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border text-center p-3">
+                    <div class="fs-4 fw-bold text-warning mb-1">@Model.GrowthRate</div>
+                    <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing:0.05em;">Growth Rate</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border text-center p-3">
+                    <div class="fs-4 fw-bold text-info mb-1">@Model.TypicalDegree</div>
+                    <div class="small text-muted text-uppercase fw-semibold" style="letter-spacing:0.05em;">Degree</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT THIS CAREER -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> About This Career
+            </h5>
+            <p class="text-muted lh-lg">@Model.Description</p>
+        </div>
+
+        <!-- WHAT YOU WILL DO -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> What You Will Do
+            </h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var responsibility in Model.Responsibilities)
+                {
+                    <li class="list-group-item bg-transparent border-bottom py-2 d-flex align-items-start gap-2">
+                        <span class="text-success mt-1">&#10003;</span>
+                        <span class="text-muted">@responsibility</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- SKILLS REQUIRED -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> Skills Required
+            </h5>
+            <div class="row g-2">
+                @foreach (var skill in Model.RequiredSkills)
+                {
+                    <div class="col-6 col-md-4">
+                        <div class="card border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-semibold">@skill.Name</span>
+                                <span class="small text-muted">@skill.Level / 4</span>
+                            </div>
+                            <div class="progress" style="height:5px;">
+                                <div class="progress-bar bg-primary" style="width: @(skill.Level * 25)%;"></div>
+                            </div>
+                            <span class="small text-muted mt-1">@skill.LevelLabel</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- TYPICAL CAREER PROGRESSION -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> Typical Career Progression
+            </h5>
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                @for (int i = 0; i < Model.CareerProgression.Count; i++)
+                {
+                    <div class="card border px-3 py-2 text-center" style="min-width:120px;">
+                        <div class="small text-muted mb-1">@Model.CareerProgression[i].YearsRange</div>
+                        <div class="fw-semibold small">@Model.CareerProgression[i].Title</div>
+                    </div>
+                    @if (i < Model.CareerProgression.Count - 1)
+                    {
+                        <span class="text-muted fs-5">&#8594;</span>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- TOP COMPANIES HIRING -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> Top Companies Hiring
+            </h5>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var company in Model.TopCompanies)
+                {
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary border px-3 py-2 fw-normal">@company</span>
+                }
+            </div>
+        </div>
+
+        <!-- RELATED CAREERS -->
+        <div class="mb-4">
+            <h5 class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <span class="text-primary">&#9670;</span> Related Careers You Might Consider
+            </h5>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var related in Model.RelatedCareers)
+                {
+                    <a href="/Student/Careers/Details/@related.Slug" class="btn btn-outline-secondary btn-sm">@related.Name &rarr;</a>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================== RIGHT — 1/4 GAP ANALYSIS PANEL ===================== -->
+    <div class="col-lg-3 ps-4">
+        <div class="sticky-top pt-2" style="top: 80px;">
+
+            @if (Model.GapAnalysis == null)
+            {
+                <!-- GAP ANALYSIS CTA — shown before analysis is run -->
+                <div class="card border-primary border-opacity-50 mb-3">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-3">
+                            <div class="fs-1 mb-2">&#127919;</div>
+                            <h5 class="fw-bold mb-1">Am I Ready for This?</h5>
+                            <p class="text-muted small lh-base">
+                                Get a personalized gap analysis comparing your current profile against what this career requires.
+                            </p>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <p class="small fw-semibold mb-2">What you will get:</p>
+                        <ul class="list-unstyled mb-3">
+                            <li class="small text-muted mb-2 d-flex align-items-start gap-2">
+                                <span class="text-success mt-1">&#10003;</span>
+                                <span>Your <strong>readiness score</strong> out of 100 for this career</span>
+                            </li>
+                            <li class="small text-muted mb-2 d-flex align-items-start gap-2">
+                                <span class="text-success mt-1">&#10003;</span>
+                                <span>Skills where you <strong>already meet</strong> the requirement</span>
+                            </li>
+                            <li class="small text-muted mb-2 d-flex align-items-start gap-2">
+                                <span class="text-warning mt-1">&#9888;</span>
+                                <span>Skills with <strong>medium priority gaps</strong> to address</span>
+                            </li>
+                            <li class="small text-muted mb-2 d-flex align-items-start gap-2">
+                                <span class="text-danger mt-1">&#9679;</span>
+                                <span>Skills with <strong>critical gaps</strong> that need immediate attention</span>
+                            </li>
+                            <li class="small text-muted d-flex align-items-start gap-2">
+                                <span class="text-info mt-1">&#128218;</span>
+                                <span>Actionable <strong>advice</strong> for each gap</span>
+                            </li>
+                        </ul>
+
+                        <!--
+                            FORM ACTION: must match [Area("Student")] + controller name
+                            asp-area    = "Student"
+                            asp-controller = "Careers"    (without "Controller" suffix)
+                            asp-action  = "GapAnalysis"   (the [HttpPost] action)
+                        -->
+                        <form method="post"
+                              asp-area="Student"
+                              asp-controller="Careers"
+                              asp-action="GapAnalysis"
+                              id="gapForm">
+                            <input type="hidden" name="careerName" value="@Model.CareerName" />
+                            <input type="hidden" name="slug"       value="@Model.Slug" />
+                            <button type="submit"
+                                    class="btn btn-primary w-100 fw-semibold py-2"
+                                    id="gapBtn"
+                                    onclick="showLoading(this)">
+                                Run Gap Analysis
+                            </button>
+                        </form>
+
+                        <p class="text-muted text-center mt-2" style="font-size:0.7rem;">
+                            Based on your resume, GitHub, and questionnaire
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card border bg-opacity-10 p-3">
+                    <p class="small text-muted mb-0 text-center">
+                        &#128161; <strong>Tip:</strong> Complete your profile first for the most accurate analysis.
+                        <a href="/Student/Onboarding" class="text-primary">Update Profile &rarr;</a>
+                    </p>
+                </div>
+            }
+            else
+            {
+                <!-- GAP ANALYSIS RESULT — server-rendered partial view -->
+                <partial name="_GapAnalysisResult"
+                         model="Model.GapAnalysis"
+                         view-data='new ViewDataDictionary(ViewData) { { "CareerName", Model.CareerName }, { "CareerSlug", Model.Slug } }' />
+            }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+    function showLoading(btn) {
+        setTimeout(() => {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Analyzing&hellip;';
+        }, 10);
+    }
+</script>
+}

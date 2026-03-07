@@ -1,0 +1,379 @@
+@* Areas/Student/Views/Dashboard/Index.cshtml *@
+@model CareerPath.Models.ViewModels.DashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+
+@section Styles {
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true"/>
+}
+
+<div class="db-wrap">
+
+  @* ── ALERTS ───────────────────────────────────────────────────────── *@
+  @if (TempData["Error"] is string err)
+  {
+    <div class="db-alert db-alert-error">⚠ @err</div>
+  }
+  @if (TempData["Success"] is string ok)
+  {
+    <div class="db-alert db-alert-success">✓ @ok</div>
+  }
+
+  @* ── GREETING ──────────────────────────────────────────────────────── *@
+  <div class="db-greeting">
+    <p class="db-eyebrow">Student Dashboard</p>
+    <h1 class="db-title">Hey, <em>@Model.FirstName</em> 👋</h1>
+    <div class="db-meta">
+      @if (!string.IsNullOrEmpty(Model.GitHubUsername))
+      {
+        <span>⌥ @Model.GitHubUsername</span>
+      }
+      @if (Model.OnboardedAt.HasValue)
+      {
+        <span>🗓 Analysed @Model.OnboardedAt.Value.ToString("MMM d, yyyy")</span>
+      }
+      @if (!string.IsNullOrEmpty(Model.TopCareerField))
+      {
+        <span>🎯 @Model.TopCareerField</span>
+      }
+      <button class="db-update-btn" onclick="openUpdateModal()">✏ Update Profile</button>
+    </div>
+  </div>
+
+  @if (!Model.HasAnalysis)
+  {
+    <div class="db-onboard-banner">
+      <h3>Your dashboard is waiting</h3>
+      <p>Complete onboarding to unlock your AI career analysis, skill radar, and personalised learning path.</p>
+      <a asp-area="Student" asp-controller="Onboarding" asp-action="Index" class="btn-primary">
+        Start Onboarding →
+      </a>
+    </div>
+  }
+  else
+  {
+    @* ── STAT ROW ────────────────────────────────────────────────────── *@
+    <div class="db-stats">
+      <div class="stat-card sc-blue">
+        <div class="stat-label">Top Match</div>
+        <div class="stat-value sv-blue">@((int)Math.Round(Model.TopCareerMatch))%</div>
+        <div class="stat-sub">@(Model.TopCareerName ?? "—")</div>
+      </div>
+      <div class="stat-card sc-green">
+        <div class="stat-label">Readiness</div>
+        <div class="stat-value sv-green">@((int)Math.Round(Model.TopCareerReadiness))%</div>
+        <div class="stat-sub">for @(Model.TopCareerName ?? "top career")</div>
+      </div>
+      <div class="stat-card sc-amber">
+        <div class="stat-label">Gaps to Close</div>
+        <div class="stat-value sv-amber">@Model.TotalGaps</div>
+        <div class="stat-sub">@Model.CriticalGaps critical · @Model.MediumGaps medium</div>
+      </div>
+      <div class="stat-card sc-teal">
+        <div class="stat-label">Strengths</div>
+        <div class="stat-value sv-teal">@Model.TotalStrengths</div>
+        <div class="stat-sub">identified skills</div>
+      </div>
+    </div>
+
+    @* ── ROW 1: Top Career + Gap Summary ─────────────────────────────── *@
+    <div class="db-row">
+      <div class="db-panel" style="flex:1.2">
+        <div class="panel-head">
+          <span class="panel-title">Top Career Match</span>
+          <a asp-area="Student" asp-controller="CareerPath" asp-action="Index" class="panel-link">View all →</a>
+        </div>
+        <div class="tc-name">@(Model.TopCareerName ?? "—")</div>
+        <div class="tc-field">@(Model.TopCareerField ?? string.Empty)</div>
+        <div class="tc-metrics">
+          <div class="tc-metric">
+            <span class="tc-metric-label">Match Score</span>
+            <span class="tc-metric-value mv-blue">@((int)Math.Round(Model.TopCareerMatch))%</span>
+          </div>
+          <div class="tc-metric">
+            <span class="tc-metric-label">Readiness</span>
+            <span class="tc-metric-value mv-green">@((int)Math.Round(Model.TopCareerReadiness))%</span>
+          </div>
+        </div>
+        <div class="readiness-bar-wrap">
+          <div class="readiness-bar-label">
+            <span>Job Readiness</span>
+            <span>@((int)Math.Round(Model.TopCareerReadiness))%</span>
+          </div>
+          <div class="readiness-bar">
+            <div class="readiness-bar-fill" id="readinessBar"
+                 data-width="@Model.TopCareerReadiness.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)">
+            </div>
+          </div>
+        </div>
+        <div class="pred-list" style="margin-top:auto">
+          @for (int i = 0; i < Model.Predictions.Count; i++)
+          {
+            var p = Model.Predictions[i];
+            <div class="pred-item @(i == 0 ? "pred-top" : "")">
+              <div class="pred-left">
+                <div class="pred-rank">@(i + 1)</div>
+                <div class="pred-name">@p.Name</div>
+              </div>
+              <div class="pred-pct">@((int)Math.Round(p.MatchPercentage))%</div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="db-panel" style="flex:1">
+        <div class="panel-head">
+          <span class="panel-title">Gap Summary · @(Model.TopCareerName ?? "Top Career")</span>
+        </div>
+        <div class="gap-ring-row">
+          @{
+            var total     = Model.TotalStrengths + Model.TotalGaps;
+            var pct       = total > 0 ? (double)Model.TotalStrengths / total * 100 : 0;
+            var dashOff   = (220 - (220 * pct / 100)).ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
+          }
+          <div class="gap-ring">
+            <svg viewBox="0 0 90 90">
+              <circle class="gap-ring-bg"   cx="45" cy="45" r="35"/>
+              <circle class="gap-ring-fill" cx="45" cy="45" r="35"
+                      id="gapRingFill" data-offset="@dashOff"/>
+            </svg>
+            <div class="gap-ring-label">
+              <span class="gap-ring-num">@Model.TotalStrengths</span>
+              <span class="gap-ring-sub">strengths</span>
+            </div>
+          </div>
+          <div class="gap-breakdown">
+            <div class="gap-row">
+              <span class="gap-row-label"><span class="gap-row-dot dot-red"></span>Critical</span>
+              <span class="gap-row-val">@Model.CriticalGaps</span>
+            </div>
+            <div class="gap-row">
+              <span class="gap-row-label"><span class="gap-row-dot dot-amber"></span>Medium</span>
+              <span class="gap-row-val">@Model.MediumGaps</span>
+            </div>
+            <div class="gap-row">
+              <span class="gap-row-label"><span class="gap-row-dot dot-green"></span>Strengths</span>
+              <span class="gap-row-val">@Model.TotalStrengths</span>
+            </div>
+          </div>
+        </div>
+        @* inline gap detail *@
+        <div class="gap-detail-list">
+          @foreach (var g in Model.GapItems.Take(4))
+          {
+            <div class="gap-detail-item">
+              <div class="gap-detail-top">
+                <span class="gap-detail-name">@g.Feature</span>
+                <span class="gap-badge @(g.IsCritical ? "gb-red" : "gb-amber")">
+                  @(g.IsCritical ? "Critical" : "Medium")
+                </span>
+              </div>
+              @if (!string.IsNullOrWhiteSpace(g.Advice))
+              {
+                <div class="gap-detail-advice">@g.Advice</div>
+              }
+            </div>
+          }
+          @if (Model.GapItems.Count > 4)
+          {
+            <div class="gap-more">+@(Model.GapItems.Count - 4) more gaps</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    @* ── ROW 2: Radar + Skills vs Ideal Bar ──────────────────────────── *@
+    <div class="db-row">
+      <div class="db-panel" style="flex:1">
+        <div class="panel-head">
+          <span class="panel-title">Skill Profile Radar</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="radarChart"></canvas>
+        </div>
+      </div>
+      <div class="db-panel" style="flex:1.4">
+        <div class="panel-head">
+          <span class="panel-title">Your Skills vs Ideal · @(Model.TopCareerName ?? "")</span>
+        </div>
+        <div class="chart-wrap chart-wrap-bar">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    @* ── ROW 3: Confidence + Readiness Over Time ─────────────────────── *@
+    <div class="db-row">
+      <div class="db-panel" style="flex:1">
+        <div class="panel-head">
+          <span class="panel-title">Data Confidence per Skill</span>
+        </div>
+        <div class="chart-wrap chart-wrap-bar">
+          <canvas id="confidenceChart"></canvas>
+        </div>
+      </div>
+      @if (Model.ReadinessTimeline.Count > 1)
+      {
+        <div class="db-panel" style="flex:1">
+          <div class="panel-head">
+            <span class="panel-title">Readiness Over Time</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="timelineChart"></canvas>
+          </div>
+        </div>
+      }
+    </div>
+
+    @* ── ROW 4: Learning Path Progress ───────────────────────────────── *@
+    @if (Model.HasLearningPath)
+    {
+      <div class="db-panel" style="margin-bottom:1rem">
+        <div class="panel-head">
+          <span class="panel-title">Learning Path Progress · @Model.LatestLearningPathCareer</span>
+          <a asp-area="Student" asp-controller="LearningPath" asp-action="Index" class="panel-link">
+            Go to roadmap →
+          </a>
+        </div>
+
+        @* progress bar *@
+        @{
+          var progPct = Model.TotalModules > 0
+            ? (double)Model.CompletedModules / Model.TotalModules * 100
+            : 0;
+        }
+        <div class="lp-progress-header">
+          <div class="lp-progress-stats">
+            <span class="lp-prog-num">@Model.CompletedModules</span>
+            <span class="lp-prog-sep">/</span>
+            <span class="lp-prog-total">@Model.TotalModules</span>
+            <span class="lp-prog-label">modules completed</span>
+          </div>
+          <span class="lp-prog-pct">@((int)progPct)%</span>
+        </div>
+        <div class="lp-progress-bar">
+          <div class="lp-progress-fill" id="lpProgressFill"
+               data-width="@progPct.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)">
+          </div>
+        </div>
+
+        @* module checklist *@
+        <div class="module-checklist" id="moduleChecklist">
+          @foreach (var m in Model.Modules)
+          {
+            var prioClass = m.Priority.ToLower() == "high"   ? "mp-high"
+                          : m.Priority.ToLower() == "medium" ? "mp-med"
+                          :                                    "mp-low";
+            <div class="module-row @(m.IsCompleted ? "mod-done" : "")" id="modrow-@m.Id">
+              <button class="mod-check @(m.IsCompleted ? "checked" : "")"
+                      onclick="toggleModule(@m.Id, this)"
+                      data-module-id="@m.Id"
+                      title="@(m.IsCompleted ? "Mark incomplete" : "Mark complete")">
+                <span class="mod-check-icon">@(m.IsCompleted ? "✓" : "")</span>
+              </button>
+              <span class="mod-concept">@m.Concept</span>
+              <span class="mod-priority @prioClass">@m.Priority</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @* ── QUICK ACTIONS ────────────────────────────────────────────────── *@
+    <div class="db-actions">
+      <a asp-area="Student" asp-controller="CareerPath" asp-action="Index" class="action-card">
+        <div class="action-icon">🎯</div>
+        <div>
+          <div class="action-title">Career Predictions</div>
+          <div class="action-desc">View your top @Model.Predictions.Count AI-matched careers</div>
+        </div>
+      </a>
+      <a asp-area="Student" asp-controller="LearningPath" asp-action="Index" class="action-card">
+        <div class="action-icon">🗺️</div>
+        <div>
+          <div class="action-title">Learning Roadmap</div>
+          <div class="action-desc">Generate a module-by-module plan for your career</div>
+        </div>
+      </a>
+      <a asp-area="Student" asp-controller="Careers" asp-action="GapAnalysis" class="action-card">
+        <div class="action-icon">📊</div>
+        <div>
+          <div class="action-title">Gap Analysis</div>
+          <div class="action-desc">See which skills to build and in what order</div>
+        </div>
+      </a>
+      <button class="action-card" onclick="openUpdateModal()" style="cursor:pointer;text-align:left">
+        <div class="action-icon">✏️</div>
+        <div>
+          <div class="action-title">Update Profile</div>
+          <div class="action-desc">Upload a new resume or refresh GitHub analysis</div>
+        </div>
+      </button>
+    </div>
+  }
+
+</div>
+
+@* ── UPDATE PROFILE MODAL ─────────────────────────────────────────────── *@
+<div class="modal-backdrop" id="updateModal" onclick="closeUpdateModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h3 class="modal-title">Update Your Profile</h3>
+      <button class="modal-close" onclick="closeUpdateModal()">✕</button>
+    </div>
+    <p class="modal-sub">
+      Upload a new resume or update your GitHub username. We'll re-run your AI analysis automatically.
+    </p>
+    <form method="post"
+          asp-area="Student"
+          asp-controller="Dashboard"
+          asp-action="UpdateProfile"
+          enctype="multipart/form-data">
+      @Html.AntiForgeryToken()
+
+      <div class="modal-field">
+        <label class="modal-label">New Resume <span class="modal-opt">(optional)</span></label>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx" class="modal-file"/>
+        <span class="modal-hint">PDF or Word · max 5MB</span>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label">GitHub Username <span class="modal-opt">(optional)</span></label>
+        <input type="text" name="githubUsername"
+               value="@Model.GitHubUsername"
+               placeholder="e.g. yatheendra"
+               class="modal-input"/>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" onclick="closeUpdateModal()" class="modal-cancel">Cancel</button>
+        <button type="submit" class="modal-submit">Re-run Analysis →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@* ── DATA INJECTION FOR CHARTS ────────────────────────────────────────── *@
+@{
+  var jsonOpts = new System.Text.Json.JsonSerializerOptions
+  {
+    PropertyNamingPolicy   = System.Text.Json.JsonNamingPolicy.CamelCase,
+    ReferenceHandler       = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+  };
+}
+
+<script id="radarData"     type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.RadarData,     jsonOpts))</script>
+<script id="barData"       type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.SkillComparison, jsonOpts))</script>
+<script id="confidenceData" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ConfidenceData, jsonOpts))</script>
+<script id="timelineData"  type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReadinessTimeline, jsonOpts))</script>
+@* antiforgery token for AJAX — read by dashboard.js *@
+@* <meta name="request-verification-token" *@
+@*       content="@Microsoft.AspNetCore.Antiforgery.IAntiforgeryExtensions.GetTokens( *@
+@*           HttpContext.RequestServices.GetRequiredService<Microsoft.AspNetCore.Antiforgery.IAntiforgery>(), *@
+@*           HttpContext).RequestToken"/> *@
+<script id="toggleUrl" type="application/json">@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Url.Action("ToggleModule", "Dashboard", new { area = "Student" })))</script>
+
+@section Scripts {
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="~/js/Dashboard.js" asp-append-version="true"></script>
+}

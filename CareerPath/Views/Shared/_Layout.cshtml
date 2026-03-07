@@ -1,0 +1,57 @@
+﻿<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> CareerPath</title>
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" /> *@
+    @* <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css"/> *@
+    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> *@
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/> *@
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    @* <link rel="stylesheet" href="//cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css"/> *@
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/CareerPath.css" asp-append-version="true"/> 
+    @RenderSection("Styles", required: false)
+</head>
+<body class="bg-gray-50 flex flex-column">
+
+
+    <partial name="_Navbar" />
+
+
+<main >
+    @RenderBody()
+    
+</main>
+
+<partial name="_Footer" />
+ @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> *@
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/CareerPath.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+@* <!DOCTYPE html> *@
+@* <html> *@
+@* <head> *@
+@*     <!-- your head content --> *@
+@*      *@
+@*     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> *@
+@* </head> *@
+@* <body> *@
+@* <partial name="_Navbar" /> *@
+@*      *@
+@* @RenderBody() *@
+@*      *@
+@* <partial name="_Footer" /> *@
+@*    *@
+@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+@* <script src="~/js/site.js" asp-append-version="true"></script> *@
+@* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> *@
+@* @await RenderSectionAsync("Scripts", required: false) *@
+@* </body> *@
+@* </html> *@
