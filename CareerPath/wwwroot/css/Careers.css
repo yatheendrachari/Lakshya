@@ -1,0 +1,157 @@
+/* ================================================================
+   CAREERS — dark theme
+   Sits on top of Bootstrap grid. Overrides all Bootstrap visual/
+   colour utilities with the unified dark system.
+================================================================ */
+:root {
+    --bg:        #09090f;
+    --bg2:       #0f0f1a;
+    --bg3:       #14141f;
+    --surface:   #1a1a2e;
+    --surface2:  #1e1e32;
+    --border:    rgba(255,255,255,.07);
+    --border2:   rgba(255,255,255,.12);
+    --text:      #e8e8f0;
+    --muted:     #7070a0;
+    --muted2:    #9090c0;
+    --accent:    #6c63ff;
+    --accent2:   #a78bfa;
+    --green:     #34d399;
+    --green-bg:  rgba(52,211,153,.1);
+    --red:       #ff5e5e;
+    --red-bg:    rgba(255,94,94,.1);
+    --amber:     #fbbf24;
+    --amber-bg:  rgba(251,191,36,.1);
+    --r:         .75rem;
+    --r2:        1.1rem;
+    --f-display: 'Syne', sans-serif;
+    --f-body:    'DM Sans', sans-serif;
+    --ease:      cubic-bezier(.4,0,.2,1);
+}
+
+/* base */
+body { background: var(--bg) !important; color: var(--text) !important; font-family: var(--f-body); }
+.container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl { background: transparent !important; }
+
+/* text utilities */
+.text-dark      { color: var(--text)    !important; }
+.text-muted     { color: var(--muted)   !important; }
+.text-primary   { color: var(--accent2) !important; }
+.text-success   { color: var(--green)   !important; }
+.text-warning   { color: var(--amber)   !important; }
+.text-danger    { color: var(--red)     !important; }
+.text-info      { color: var(--muted2)  !important; }
+.text-secondary { color: var(--muted2)  !important; }
+
+/* card */
+.card { background: var(--surface) !important; border-color: var(--border2) !important; color: var(--text) !important; border-radius: var(--r2) !important; }
+.card-body { background: transparent !important; }
+
+/* borders */
+.border,.border-end,.border-bottom { border-color: var(--border2) !important; }
+.border-primary { border-color: rgba(108,99,255,.35) !important; }
+.border-success { border-color: rgba(52,211,153,.35)  !important; }
+.border-warning { border-color: rgba(251,191,36,.35)  !important; }
+.border-danger  { border-color: rgba(255,94,94,.35)   !important; }
+.card.border-danger  { background: rgba(255,94,94,.04)  !important; border-color: rgba(255,94,94,.3)  !important; }
+.card.border-warning { background: rgba(251,191,36,.04) !important; border-color: rgba(251,191,36,.3) !important; }
+.card.border-primary { background: rgba(108,99,255,.05) !important; border-color: rgba(108,99,255,.3) !important; }
+
+/* badges */
+.badge { font-family: var(--f-body); font-weight: 600; border-radius: 99px !important; }
+.bg-primary.bg-opacity-10,.badge.bg-primary { background: rgba(108,99,255,.15) !important; color: var(--accent2) !important; }
+.bg-success.bg-opacity-10,.badge.bg-success { background: var(--green-bg)      !important; color: var(--green)   !important; }
+.bg-warning.bg-opacity-10,.badge.bg-warning { background: var(--amber-bg)      !important; color: var(--amber)   !important; }
+.bg-danger.bg-opacity-10, .badge.bg-danger  { background: var(--red-bg)        !important; color: var(--red)     !important; }
+.bg-info.bg-opacity-10,   .badge.bg-info    { background: rgba(34,211,238,.1)  !important; color: #22d3ee        !important; }
+.bg-secondary.bg-opacity-10,.badge.bg-secondary,.badge.bg-light { background: var(--surface2) !important; color: var(--muted2) !important; border-color: var(--border2) !important; }
+.badge.text-primary   { color: var(--accent2) !important; }
+.badge.text-success   { color: var(--green)   !important; }
+.badge.text-warning   { color: var(--amber)   !important; }
+.badge.text-danger    { color: var(--red)     !important; }
+.badge.text-secondary { color: var(--muted2)  !important; }
+.badge.bg-danger.bg-opacity-10.text-danger   { background: var(--red-bg)   !important; color: var(--red)   !important; }
+.badge.bg-warning.bg-opacity-10.text-warning { background: var(--amber-bg) !important; color: var(--amber) !important; }
+.badge.bg-success.bg-opacity-10.text-success { background: var(--green-bg) !important; color: var(--green) !important; }
+
+/* list group */
+.list-group-item,.list-group-item.bg-transparent { background: transparent !important; border-color: var(--border2) !important; color: var(--text) !important; }
+
+/* progress */
+.progress { background: var(--border2) !important; border-radius: 99px; }
+.progress-bar.bg-primary { background: var(--accent) !important; }
+
+/* breadcrumb */
+.breadcrumb-item a { color: var(--accent2); text-decoration: none; }
+.breadcrumb-item a:hover { color: var(--text); }
+.breadcrumb-item.active { color: var(--muted); }
+.breadcrumb-item+.breadcrumb-item::before { color: var(--muted); }
+
+/* buttons */
+.btn-primary { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; font-family: var(--f-body); font-weight: 600; border-radius: var(--r) !important; transition: opacity .2s, transform .15s; }
+.btn-primary:hover { opacity: .85 !important; transform: translateY(-1px); }
+.btn-outline-secondary { border-color: var(--border2) !important; color: var(--muted2) !important; background: transparent !important; font-family: var(--f-body); border-radius: var(--r) !important; font-size: .8rem; }
+.btn-outline-secondary:hover { background: var(--surface2) !important; color: var(--text) !important; border-color: var(--accent2) !important; }
+
+/* misc */
+.alert-warning { background: var(--amber-bg) !important; border-color: rgba(251,191,36,.3) !important; color: var(--amber) !important; }
+.btn-close { filter: invert(1) opacity(.5); }
+hr { border-color: var(--border2); opacity: 1; }
+.bg-white,.bg-light { background: var(--surface) !important; }
+.rounded-3.bg-primary.bg-opacity-10 { background: rgba(108,99,255,.15) !important; color: var(--accent2) !important; }
+.spinner-border-sm { color: #fff; }
+
+/* ================================================================
+   CATALOG — Index.cshtml
+================================================================ */
+.careers-index-wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+.careers-eyebrow { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent2); margin-bottom: .4rem; }
+.careers-title { font-family: var(--f-display); font-size: 1.9rem; font-weight: 800; margin-bottom: .3rem; }
+.careers-sub { color: var(--muted); font-size: .9rem; margin-bottom: 2rem; }
+
+.career-card { background: var(--surface) !important; border: 1.5px solid var(--border2) !important; box-shadow: none !important; border-radius: var(--r2) !important; transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease); }
+.career-card:hover { border-color: rgba(108,99,255,.4) !important; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(108,99,255,.12) !important; }
+.career-card-icon { width: 44px; height: 44px; background: rgba(108,99,255,.2) !important; color: var(--accent2) !important; border-radius: var(--r) !important; flex-shrink: 0; }
+.career-card-desc { color: var(--muted) !important; font-size: .82rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.career-card-arrow { color: var(--muted) !important; transition: color .18s; }
+.career-card:hover .career-card-arrow { color: var(--accent2) !important; }
+.fw-bold.text-dark.lh-sm { color: var(--text) !important; }
+
+/* ================================================================
+   DETAIL — Details.cshtml
+================================================================ */
+.career-detail-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
+.career-detail-wrap h1.fw-bold { font-family: var(--f-display); font-size: 1.75rem; font-weight: 800; color: var(--text); }
+.career-detail-wrap h5.fw-semibold { font-family: var(--f-display); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted2); padding-bottom: .6rem; border-bottom: 1px solid var(--border2); margin-bottom: 1rem !important; }
+.career-detail-wrap .lh-lg { color: var(--muted) !important; line-height: 1.75; }
+.career-detail-wrap .row.g-3 .card { background: var(--surface2) !important; }
+.career-detail-wrap .row.g-3 .fs-4.fw-bold { font-family: var(--f-display); }
+.career-detail-wrap .row.g-2 .card { background: var(--surface2) !important; }
+.career-detail-wrap .row.g-2 .small.fw-semibold { color: var(--text); }
+.career-detail-wrap .card.border.px-3.py-2 { background: var(--surface2) !important; }
+.career-detail-wrap .card.border.px-3.py-2 .fw-semibold { color: var(--text); }
+.career-detail-wrap .d-flex > .text-muted.fs-5 { color: var(--muted) !important; }
+.career-detail-wrap .col-lg-3 .sticky-top .card { background: var(--surface) !important; }
+
+/* ================================================================
+   GAP ANALYSIS — _GapAnalysisResult.cshtml
+================================================================ */
+.small.fw-bold.text-danger  { color: var(--red)   !important; }
+.small.fw-bold.text-warning { color: var(--amber) !important; }
+.small.fw-bold.text-success { color: var(--green) !important; }
+.card p.text-muted { color: var(--muted) !important; }
+.border-bottom.py-1 { border-color: var(--border2) !important; }
+.card.border-primary.border-opacity-50 h5.fw-bold { font-family: var(--f-display); color: var(--text); }
+.card.border.bg-opacity-10 { background: var(--surface2) !important; }
+.row.g-2 .card.border.text-center.p-2 { background: var(--surface2) !important; padding: .5rem !important; }
+
+/* ================================================================
+   RESPONSIVE
+================================================================ */
+@media (max-width: 992px) {
+    .career-detail-wrap .border-end { border: none !important; border-bottom: 1px solid var(--border2) !important; padding-bottom: 2rem; margin-bottom: 2rem; padding-right: 0 !important; }
+}
+@media (max-width: 640px) {
+    .careers-title { font-size: 1.5rem; }
+    .career-detail-wrap, .careers-index-wrap { padding: 1.5rem 1rem 4rem; }
+}

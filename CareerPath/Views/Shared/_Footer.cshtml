@@ -1,0 +1,235 @@
+@* <!-- Full Footer (always in document flow at bottom) --> *@
+@* <footer id="footer-full" class="bg-black  text-secondary py-5"> *@
+@*     <div class="container"> *@
+@*         <div class="row g-4 mb-4"> *@
+@* *@
+@*             <!-- Brand --> *@
+@*             <div class="col-md-6"> *@
+@*                 <div class="d-flex align-items-center gap-2 mb-3"> *@
+@*                     <div class="bg-primary rounded d-flex align-items-center justify-content-center" *@
+@*                          style="width:32px; height:32px;"> *@
+@*                         <span class="text-white fw-bold">C</span> *@
+@*                     </div> *@
+@*                     <span class="fw-bold fs-5 text-white">CareerPath</span> *@
+@*                 </div> *@
+@*                 <p class="small"> *@
+@*                     AI-powered career guidance platform helping professionals discover *@
+@*                     and achieve their dream careers with personalized roadmaps. *@
+@*                 </p> *@
+@*             </div> *@
+@* *@
+@*             <!-- Product Links --> *@
+@*             <div class="col-md-3"> *@
+@*                 <h6 class="text-white fw-semibold mb-3">Product</h6> *@
+@*                 <ul class="list-unstyled d-flex flex-column gap-2 small"> *@
+@*                     <li><a href="#features" class="text-secondary text-decoration-none">Features</a></li> *@
+@*                     <li><a href="#careers" class="text-secondary text-decoration-none">Careers</a></li> *@
+@*                     <li><a href="#" class="text-secondary text-decoration-none">Pricing</a></li> *@
+@*                     <li><a href="#" class="text-secondary text-decoration-none">FAQ</a></li> *@
+@*                 </ul> *@
+@*             </div> *@
+@* *@
+@*             <!-- Company Links --> *@
+@*             <div class="col-md-3"> *@
+@*                 <h6 class="text-white fw-semibold mb-3">Company</h6> *@
+@*                 <ul class="list-unstyled d-flex flex-column gap-2 small"> *@
+@*                     <li><a href="#" class="text-secondary text-decoration-none">About</a></li> *@
+@*                     <li><a href="#" class="text-secondary text-decoration-none">Blog</a></li> *@
+@*                     <li><a href="#" class="text-secondary text-decoration-none">Contact</a></li> *@
+@*                     <li> *@
+@*                         <a asp-controller="Careers" asp-action="Index" *@
+@*                            class="text-secondary text-decoration-none">Careers</a> *@
+@*                     </li> *@
+@*                 </ul> *@
+@*             </div> *@
+@*         </div> *@
+@* *@
+@*         <!-- Bottom Bar --> *@
+@*         <div class="border-top border-secondary pt-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3"> *@
+@*             <p class="small mb-0">© @DateTime.Now.Year CareerPath. All rights reserved.</p> *@
+@*             <div class="d-flex align-items-center gap-4 small"> *@
+@*                 <a asp-controller="Home" asp-action="Privacy" *@
+@*                    class="text-secondary text-decoration-none">Privacy Policy</a> *@
+@*                 <a href="#" class="text-secondary text-decoration-none">Terms of Service</a> *@
+@*                 <a href="#" class="text-secondary text-decoration-none">Cookie Policy</a> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </footer> *@
+@* *@
+@* <!-- Compact Bar (fixed, visible when full footer is NOT in view) --> *@
+@* <div id="footer-compact" *@
+@*      class="fixed-bottom bg-dark text-secondary border-top border-secondary" *@
+@*      style="z-index: 1030; transition: opacity 0.3s ease, transform 0.3s ease;"> *@
+@*     <div class="container py-2 d-flex align-items-center justify-content-between"> *@
+@* *@
+@*         <!-- Brand --> *@
+@*         <div class="d-flex align-items-center gap-2"> *@
+@*             <div class="bg-primary rounded d-flex align-items-center justify-content-center" *@
+@*                  style="width:24px; height:24px;"> *@
+@*                 <span class="text-white fw-bold" style="font-size:11px;">C</span> *@
+@*             </div> *@
+@*             <span class="fw-bold small text-white">CareerPath</span> *@
+@*         </div> *@
+@* *@
+@*         <!-- Quick Links --> *@
+@*         <div class="d-none d-sm-flex align-items-center gap-4 small"> *@
+@*             <a href="#features" class="text-secondary text-decoration-none">Features</a> *@
+@*             <a href="#" class="text-secondary text-decoration-none">Privacy</a> *@
+@*             <a href="#" class="text-secondary text-decoration-none">Terms</a> *@
+@*             <span class="text-secondary opacity-50">© @DateTime.Now.Year CareerPath</span> *@
+@*         </div> *@
+@* *@
+@*         <!-- Scroll hint --> *@
+@*         <div class="d-flex align-items-center gap-1 small text-secondary opacity-50"> *@
+@*             <span>Scroll for more</span> *@
+@*             <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"> *@
+@*                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/> *@
+@*             </svg> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* <!-- Spacer to prevent content hiding behind the compact fixed footer --> *@
+@* <div id="footer-spacer" style="height: 48px;"></div> *@
+@* *@
+@* <script> *@
+@*     const compact = document.getElementById('footer-compact'); *@
+@*     const spacer  = document.getElementById('footer-spacer'); *@
+@*     const full    = document.getElementById('footer-full'); *@
+@* *@
+@*     // Use IntersectionObserver — triggers only when the full footer *@
+@*     // actually enters/leaves the viewport, avoiding any scroll loop. *@
+@*     const observer = new IntersectionObserver( *@
+@*         (entries) => { *@
+@*             entries.forEach(entry => { *@
+@*                 if (entry.isIntersecting) { *@
+@*                     // Full footer is visible — hide compact bar + spacer *@
+@*                     compact.style.opacity   = '0'; *@
+@*                     compact.style.transform = 'translateY(100%)'; *@
+@*                     spacer.style.display    = 'none'; *@
+@*                 } else { *@
+@*                     // Full footer is out of view — show compact bar + spacer *@
+@*                     compact.style.opacity   = '1'; *@
+@*                     compact.style.transform = 'translateY(0)'; *@
+@*                     spacer.style.display    = 'block'; *@
+@*                 } *@
+@*             }); *@
+@*         }, *@
+@*         { *@
+@*             // Trigger as soon as 1px of the full footer enters the viewport *@
+@*             threshold: 0 *@
+@*         } *@
+@*     ); *@
+@* *@
+@*     observer.observe(full); *@
+@* </script> *@
+
+
+
+
+<footer class="bg-dark text-white py-5">
+    <div class="container py-4">
+        <div class="row g-4 mb-5">
+            <!-- Brand Column -->
+            <div class="col-lg-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 2.25rem; height: 2.25rem; background: linear-gradient(135deg, #6366f1, #a855f7);">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9.153 5.408C10.42 3.136 11.053 2 12 2c.947 0 1.58 1.136 2.847 3.408l.328.588c.36.646.54.969.82 1.182.28.213.63.292 1.33.45l.636.144c2.46.557 3.689.835 3.982 1.776.292.94-.546 1.921-2.223 3.882l-.434.507c-.476.557-.715.836-.822 1.18-.107.345-.071.717.001 1.46l.066.677c.253 2.617.38 3.925-.386 4.506-.766.582-1.918.051-4.22-1.009l-.597-.274c-.654-.302-.981-.452-1.328-.452-.347 0-.674.15-1.328.452l-.596.274c-2.303 1.06-3.455 1.59-4.22 1.01-.767-.582-.64-1.89-.387-4.507l.066-.676c.072-.744.108-1.116 0-1.46-.106-.345-.345-.624-.821-1.18l-.434-.508c-1.677-1.96-2.515-2.941-2.223-3.882.293-.941 1.523-1.22 3.983-1.776l.636-.144c.699-.158 1.048-.237 1.329-.45.28-.213.46-.536.82-1.182l.328-.588z"/>
+                        </svg>
+                    </div>
+                    <span class="h5 mb-0 fw-semibold">CareerPath</span>
+                </div>
+                <p class="text-white-50 mb-3">
+                    AI-powered career guidance platform helping students discover their ideal career paths through advanced machine learning and personalized recommendations.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-white-50 hover-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-white-50 hover-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-white-50 hover-primary">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product Links -->
+            <div class="col-6 col-lg-2">
+                <h6 class="fw-bold mb-3">Product</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#how-it-works" class="text-white-50 text-decoration-none hover-primary">How It Works</a></li>
+                    <li class="mb-2"><a href="#features" class="text-white-50 text-decoration-none hover-primary">Features</a></li>
+                    <li class="mb-2"><a href="/Careers" class="text-white-50 text-decoration-none hover-primary">Career Catalog</a></li>
+                    <li class="mb-2"><a href="#pricing" class="text-white-50 text-decoration-none hover-primary">Pricing</a></li>
+                </ul>
+            </div>
+
+            <!-- Resources Links -->
+            <div class="col-6 col-lg-2">
+                <h6 class="fw-bold mb-3">Resources</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#docs" class="text-white-50 text-decoration-none hover-primary">Documentation</a></li>
+                    <li class="mb-2"><a href="#blog" class="text-white-50 text-decoration-none hover-primary">Blog</a></li>
+                    <li class="mb-2"><a href="#research" class="text-white-50 text-decoration-none hover-primary">Research</a></li>
+                    <li class="mb-2"><a href="#faq" class="text-white-50 text-decoration-none hover-primary">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Company Links -->
+            <div class="col-6 col-lg-2">
+                <h6 class="fw-bold mb-3">Company</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#about" class="text-white-50 text-decoration-none hover-primary">About Us</a></li>
+                    <li class="mb-2"><a href="#contact" class="text-white-50 text-decoration-none hover-primary">Contact</a></li>
+                    <li class="mb-2"><a href="#partners" class="text-white-50 text-decoration-none hover-primary">Partners</a></li>
+                    <li class="mb-2"><a href="#press" class="text-white-50 text-decoration-none hover-primary">Press Kit</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal Links -->
+            <div class="col-6 col-lg-2">
+                <h6 class="fw-bold mb-3">Legal</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#privacy" class="text-white-50 text-decoration-none hover-primary">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="#terms" class="text-white-50 text-decoration-none hover-primary">Terms of Service</a></li>
+                    <li class="mb-2"><a href="#security" class="text-white-50 text-decoration-none hover-primary">Data Security</a></li>
+                    <li class="mb-2"><a href="#cookies" class="text-white-50 text-decoration-none hover-primary">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="pt-4 border-top border-secondary">
+            <div class="row align-items-center g-3">
+                <div class="col-md-6">
+                    <p class="small text-white-50 mb-0">
+                        &copy; @DateTime.Now.Year CareerPath. All rights reserved. Built with ASP.NET Core & FastAPI.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="small text-white-50 mb-0">
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 me-2">95.64% Accuracy</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">&lt;3s Response</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.hover-primary:hover {
+    color: darkgreen !important;
+    transition: color 0.2s;
+}
+</style>

@@ -1,0 +1,193 @@
+@using CareerPath.Models.ViewModels
+@model CareerPath.Models.ViewModels.OnboardingViewModel
+
+@{
+    ViewData["Title"] = "Complete Your Profile";
+    var currentStep = Model?.CurrentStep ?? 1;
+    var questions = Model?.Questions ?? new List<DynamicQuestion>();
+}
+
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5" style="background: linear-gradient(135deg, rgba(50, 93, 136, 0.05), rgba(41, 171, 224, 0.05));">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                
+                <!-- Progress Indicator -->
+                <div class="text-center mb-4">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <div class="rounded-circle @(currentStep >= 1 ? "bg-primary text-white" : "bg-light border border-2 text-muted") d-flex align-items-center justify-content-center fw-bold" style="width: 2.5rem; height: 2.5rem;">
+                            @(currentStep > 1 ? "✓" : "1")
+                        </div>
+                        <div class="border-top border-2 @(currentStep >= 2 ? "border-primary" : "border-light") flex-grow-1" style="max-width: 4rem;"></div>
+                        <div class="rounded-circle @(currentStep >= 2 ? "bg-primary text-white" : "bg-light border border-2 text-muted") d-flex align-items-center justify-content-center fw-bold" style="width: 2.5rem; height: 2.5rem;">
+                            @(currentStep > 2 ? "✓" : "2")
+                        </div>
+                        <div class="border-top border-2 @(currentStep >= 3 ? "border-primary" : "border-light") flex-grow-1" style="max-width: 4rem;"></div>
+                        <div class="rounded-circle @(currentStep >= 3 ? "bg-primary text-white" : "bg-light border border-2 text-muted") d-flex align-items-center justify-content-center fw-bold" style="width: 2.5rem; height: 2.5rem;">
+                            3
+                        </div>
+                    </div>
+                    <p class="small text-muted mb-0">
+                        @(currentStep == 1 ? "Upload Your Data" : currentStep == 2 ? "Analyzing Profile" : "Answer Questions")
+                    </p>
+                </div>
+
+                <!-- Card Container -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-body p-4 p-md-5 position-relative">
+                        
+                        <!-- Step 1: Upload -->
+                        <div id="step1" class="step-content @(currentStep != 1 ? "d-none" : "")">
+                            <partial name="_UploadStep" />
+                        </div>
+
+                        <!-- Step 2: Loading (shown briefly then auto-moves to step 3) -->
+                        @if (currentStep == 2)
+                        {
+                            <div id="step2" class="step-content">
+                                <partial name="_LoadingStep" />
+                            </div>
+                            
+                            @if (questions.Any())
+                            {
+                                <script>
+                                    // Auto-transition after 2 seconds
+                                    setTimeout(function() {
+                                        document.getElementById('step2').classList.add('d-none');
+                                        document.getElementById('step3').classList.remove('d-none');
+                                    }, 10000);
+                                </script>
+                            }
+                            else
+                            {
+                                <script>
+                                    // No questions, redirect to home after animation
+                                    setTimeout(function() {
+                                        window.location.href = '/?onboarding=complete';
+                                    }, 10000);
+                                </script>
+                            }
+                        }
+                        <!-- Step 3: Questionnaire -->
+<!-- 
+    enctype="multipart/form-data" is required because the form re-submits
+    the resume file alongside the answers in one single POST to /full-analysis.
+    githubUsername is carried as a hidden field from the Analyze step.
+-->
+<div id="step3" class="step-content @(currentStep != 3 && currentStep != 2 ? "d-none" : (currentStep == 2 ? "d-none" : ""))">
+    @if (questions.Any())
+    {
+        <div class="text-center mb-4">
+            <div class="rounded-3 d-inline-flex align-items-center justify-content-center mb-3 text-white"
+                 style="width: 4rem; height: 4rem; background: linear-gradient(135deg, #29abe0, #93c54b);">
+                <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                </svg>
+            </div>
+            <h3 class="fw-bold mb-2">Just a Few More Questions</h3>
+            <p class="text-muted mb-0">
+                Help us understand your skills better by answering these questions.
+                <br><small class="text-muted">This will only take 2-3 minutes.</small>
+            </p>
+        </div>
+
+        @if (questions.Any(q => q.Trigger == "inconsistency"))
+        {
+            <div class="alert alert-warning bg-warning bg-opacity-10 border-warning d-flex align-items-start gap-3 mb-4">
+                <svg class="text-warning flex-shrink-0 mt-1" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+                <div class="small">
+                    <strong>We found some inconsistencies.</strong> Some questions below are marked as important to help clarify your profile.
+                </div>
+            </div>
+        }
+
+        <form method="post"
+              enctype="multipart/form-data"
+              asp-area="Student"
+              asp-controller="Onboarding"
+              asp-action="Complete">
+            @Html.AntiForgeryToken()
+
+            <!-- Carry github username through from Analyze step -->
+            <input type="hidden" name="githubUsername" value="@Model.GitHubUsername" />
+
+            <!-- Re-submit resume so /full-analysis has everything in one shot -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold small text-muted">
+                    Re-attach your resume <span class="text-danger">*</span>
+                </label>
+                <input type="file"
+                       class="form-control"
+                       name="resume"
+                       accept=".pdf"
+                       required>
+                <div class="form-text">We need this again to run the full analysis alongside your answers.</div>
+            </div>
+
+            <hr class="my-4">
+
+            @for (int i = 0; i < questions.Count; i++)
+            {
+                var q = questions[i];
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        @(i + 1). @q.Question
+                        @if (q.Trigger == "inconsistency")
+                        {
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning ms-2">Important</span>
+                        }
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           name="answers[@q.Id]"
+                           placeholder="Your answer..."
+                           required>
+                </div>
+            }
+
+            <button type="submit" class="btn btn-success w-100 py-3 fw-semibold mt-2">
+                Complete Profile
+                <svg class="ms-2" width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </button>
+
+            <p class="text-center text-muted small mt-3 mb-0">
+                You can update these answers later in your profile settings
+            </p>
+        </form>
+    }
+</div>
+
+                    </div>
+                </div>
+
+                <!-- Skip Link (only shown in step 1) -->
+                @if (currentStep == 1)
+                {
+                    <div class="text-center mt-3">
+                        <a href="/" class="text-muted text-decoration-none small">
+                            Skip for now, I'll complete this later
+                        </a>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<style>
+    .step-content {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+    }
+    
+    .step-content.d-none {
+        opacity: 0;
+    }
+</style>
+}

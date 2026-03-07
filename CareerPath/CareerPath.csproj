@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Auth\Login.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Auth\Register.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Shared\_LoginPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Shared\_ValidationScriptsPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\_ViewImports.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\_ViewStart.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.22" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.24" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\Images\lawn_leaf.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CareerPath.DataAccess\CareerPath.DataAccess.csproj" />
+      <ProjectReference Include="..\CareerPath.Models\CareerPath.Models.csproj" />
+      <ProjectReference Include="..\CareerPath.Services\CareerPath.Services.csproj" />
+      <ProjectReference Include="..\CareerPath.Utilities\CareerPath.Utilities.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Student\Views\Careers\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Student\Views\Careers\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Student\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Student\Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
+</Project>

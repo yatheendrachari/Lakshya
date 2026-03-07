@@ -1,0 +1,341 @@
+@* Views/CareerPath/Index.cshtml *@
+@model CareerPath.Models.ViewModels.CareerPathViewModel
+
+@{ ViewData["Title"] = "Your Career Path"; }
+
+@section Styles {
+  <%-- swap Fraunces/Plus Jakarta for Syne/DM Sans to match --%>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="~/css/CareerPath.css" asp-append-version="true"/>
+}
+
+<!-- ================================================================
+     HERO
+================================================================ -->
+<section class="hero">
+  <span class="live-badge"><span class="live-dot"></span>AI Analysis Complete</span>
+  <h1 class="hero-title">Your Career Path <em>Awaits</em></h1>
+  <p class="hero-sub">Based on your profile across <strong>15 skills</strong> and <strong>90+ careers</strong> — here are the top matches for you.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">📊 95.6% Model Accuracy</span>
+    <span class="hero-pill">🎯 Personalised to You</span>
+    <span class="hero-pill">📈 Live Market Data</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     REVEAL SECTION — blurred cards + generate overlay
+================================================================ -->
+<section class="reveal-section" id="revealSection">
+
+  <div class="cards-grid" id="cardsGrid">
+    @for (int i = 0; i < 4; i++) {
+      var pos  = i + 1;
+      var card = (Model.Predictions != null && i < Model.Predictions.Count) ? Model.Predictions[i] : null;
+      var demandClass = card?.DemandLevel == "High" ? "d-high" : card?.DemandLevel == "Medium" ? "d-medium" : "d-low";
+      var revealedClass = Model.HasPredictions ? "revealed" : "";
+
+      <div class="c-card @revealedClass" data-rank="@pos" id="card-@pos">
+        <span class="c-rank">#@pos Match</span>
+
+        <!-- Skeleton (shown until revealed) -->
+        <div class="card-ph">
+          <div class="sk sk-avatar"></div>
+          <div class="sk sk-h sk-w100"></div>
+          <div class="sk sk-m sk-w70"></div>
+          <div class="sk sk-s sk-w50" style="margin-bottom:.9rem"></div>
+          <div class="sk sk-s sk-w100"></div>
+          <div class="sk sk-s sk-w70"></div>
+          <div class="sk sk-s sk-w40" style="margin-top:auto"></div>
+        </div>
+
+        <!-- Revealed content -->
+        <div class="card-rv">
+          @if (card != null) {
+            <p class="card-name">@card.Name</p>
+            <div class="score-row">
+              <span class="score-num">@card.Match</span>
+              <span class="score-pct">%</span>
+              <span class="score-tag">Match Score</span>
+            </div>
+            <span class="field-tag">@card.SubField</span>
+            <div class="card-list">
+              @foreach (var s in card.Strengths.Take(2)) {
+                <span class="card-list-item str">✓ @s</span>
+              }
+              @if (card.Gaps.Any()) {
+                <span class="card-list-item gap">⚠ @card.Gaps[0].Name</span>
+              }
+            </div>
+            <div class="card-foot">
+              <span class="card-salary">@card.Salary</span>
+              <span class="demand-chip @demandClass">@card.DemandLevel Demand</span>
+            </div>
+            <button class="card-btn" onclick="openPanel(@pos)">View Full Details →</button>
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+
+  <!-- Overlay (hidden if already revealed) -->
+  @if (!Model.HasPredictions) {
+    <div class="reveal-overlay" id="revealOverlay">
+      <div class="gen-card">
+        <span class="gen-icon">🔮</span>
+        <h3>Ready to see your top career matches?</h3>
+        <p>Our AI has analysed your profile. Click below to reveal your personalised results instantly.</p>
+
+        <form method="post" asp-action="Generate" asp-controller="CareerPath" id="generateForm">
+          @Html.AntiForgeryToken()
+          <button type="submit" class="btn-gen" id="generateBtn">
+            <span class="b-spinner"></span>
+            <span class="b-icon">✦</span>
+            <span class="b-label">Reveal My Career Path</span>
+          </button>
+        </form>
+
+        <p class="gen-hint">Takes less than 2 seconds</p>
+      </div>
+    </div>
+  }
+
+</section>
+
+<!-- ================================================================
+     BELOW REVEAL  (comparison + next steps)
+================================================================ -->
+<div class="below-reveal @(Model.HasPredictions ? "visible" : "")" id="belowReveal">
+
+  <!-- COMPARISON TABLE -->
+  <section class="cmp-section">
+    <div class="container">
+      <p class="sec-eyebrow">Side-by-Side Breakdown</p>
+      <h2 class="sec-heading">How Your Matches Compare</h2>
+      <p class="sec-sub">Every metric you need to pick the right path — salary, growth, readiness, and what to learn next.</p>
+
+      <div class="cmp-wrap">
+        <table class="cmp">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Metric</th>
+              @{ var colors = new[]{"#2563eb","#0ea5e9","#10b981","#64748b"}; }
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  var p = Model.Predictions[i];
+                  <th class="@(i==0?"best":"")">
+                    <span class="th-stripe" style="background:@colors[i];"></span>
+                    <span class="th-name">@p.Name</span>
+                    <span class="th-field">@p.Field</span>
+                  </th>
+                }
+              }
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>🎯 Match Score</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  var p = Model.Predictions[i];
+                  var sbClass = p.Match >= 90 ? "sb-s" : p.Match >= 80 ? "sb-a" : "sb-b";
+                  <td class="@(i==0?"best":"")">
+                    <span class="score-badge @sbClass">@p.Match%</span>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>⚡ Your Readiness</td>
+              @if (Model.Predictions != null) {
+                @foreach (var p in Model.Predictions) {
+                  var isFirst = Model.Predictions.IndexOf(p) == 0;
+                  <td class="@(isFirst?"best":"")">
+                    <div class="rbar-wrap">
+                      <div class="rbar"><div class="rbar-fill" style="width:@(p.Readiness)%"></div></div>
+                      <span class="rbar-num">@p.Readiness%</span>
+                    </div>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>💰 Avg Salary</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  var p = Model.Predictions[i];
+                  <td class="@(i==0?"best":"")">
+                    <div class="sal-val">@p.AverageSalary</div>
+                    <div class="sal-range">@p.Salary</div>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>📈 Job Growth</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  <td class="@(i==0?"best":"")">
+                    <span class="growth-val">@Model.Predictions[i].Growth</span>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>⏱ Time to Job-Ready</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  <td class="@(i==0?"best":"")">
+                    <span class="time-pill"> @Model.Predictions[i].TimeToReady</span>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>🔧 Key Gaps to Close</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  <td class="@(i==0?"best":"")">
+                    <ul class="gap-list">
+                      @foreach (var g in Model.Predictions[i].Gaps.Take(2)) {
+                        <li>@g.Name</li>
+                      }
+                    </ul>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>📊 Market Demand</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  var p = Model.Predictions[i];
+                  var dc = p.DemandLevel=="High"?"d-high":p.DemandLevel=="Medium"?"d-medium":"d-low";
+                  <td class="@(i==0?"best":"")">
+                    <span class="demand-chip @dc">@p.DemandLevel</span>
+                  </td>
+                }
+              }
+            </tr>
+
+            <tr>
+              <td>🏠 Work Mode</td>
+              @if (Model.Predictions != null) {
+                @for (int i = 0; i < Model.Predictions.Count; i++) {
+                  <td class="@(i==0?"best":"")">@Model.Predictions[i].WorkMode</td>
+                }
+              }
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEXT STEPS -->
+  <section class="steps-section">
+    <div class="container">
+      <p class="sec-eyebrow">What Comes Next</p>
+      <h2 class="sec-heading">Your Action Plan</h2>
+      <p class="sec-sub">Four steps to turn your career match into a job offer.</p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div><span class="step-ico">🔍</span>
+          <div>
+            <div class="step-title">Dig Into Each Match</div>
+            <div class="step-desc">Click "View Full Details" on any card to see the full salary breakdown, required qualifications, and day-to-day role.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div><span class="step-ico">🎯</span>
+          <div>
+            <div class="step-title">Run a Gap Analysis</div>
+            <div class="step-desc">Pick your top choice and run a personalised gap analysis to see exactly which skills to build and in what order.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div><span class="step-ico">🗺️</span>
+          <div>
+            <div class="step-title">Get Your Learning Roadmap</div>
+            <div class="step-desc">We'll generate a week-by-week course plan built around your gaps — curated resources, projects, and milestones included.</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div><span class="step-ico">🚀</span>
+          <div>
+            <div class="step-title">Track Your Readiness Score</div>
+            <div class="step-desc">As you complete courses, your readiness score climbs. Hit 85%+ and you're ready to apply with confidence.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a asp-controller="Careers" asp-action="Index" class="btn-outline">Browse All 90+ Careers →</a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /below-reveal -->
+
+<!-- ================================================================
+     SPLIT DETAIL OVERLAY
+     Left 27%: mini prediction card   Right 73%: career detail
+================================================================ -->
+<div id="detailOverlay" class="detail-overlay" role="dialog" aria-modal="true" aria-label="Career Detail">
+
+  <!-- blurred backdrop — click to close -->
+  <div class="detail-bg" onclick="closePanel()" aria-hidden="true"></div>
+
+  <!-- LEFT: mini prediction card (rendered by JS) -->
+  <div class="detail-left" id="detailLeft" aria-hidden="true"></div>
+
+  <!-- RIGHT: full career detail -->
+  <div class="detail-right" tabindex="-1">
+    <div class="dr-head">
+      <span class="dr-head-title" id="detailHeadTitle">Career Details</span>
+      <button class="dr-close " onclick="closePanel()" aria-label="Close career detail">X</button>
+    </div>
+    <div class="dr-body" id="detailBody"></div>
+  </div>
+
+</div>
+
+@section Scripts {
+  @* Inject model data as JS before careerpath.js loads *@
+  <script>
+    window.careerData = @Html.Raw(
+      System.Text.Json.JsonSerializer.Serialize(
+        Model.Predictions ?? new List<CareerPath.Models.ViewModels.CareerPredictionCardViewModel>(),
+        new System.Text.Json.JsonSerializerOptions {
+          PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+        }
+      )
+    );
+  </script>
+  <script src="~/js/careerpath.js" asp-append-version="true"></script>
+
+  @* If POST returned with data — trigger reveal immediately *@
+  @if (Model.HasPredictions) {
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        /* animate readiness bars */
+        document.querySelectorAll('.rbar-fill').forEach(function(bar) {
+          var w = bar.style.width; bar.style.width = '0';
+          requestAnimationFrame(function(){
+            requestAnimationFrame(function(){ bar.style.width = w; });
+          });
+        });
+      });
+    </script>
+  }
+}

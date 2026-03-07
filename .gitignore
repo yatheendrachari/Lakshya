@@ -1,0 +1,56 @@
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+
+# ===========================
+# .NET Build Output
+# ===========================
+**/bin/
+**/obj/
+
+# ===========================
+# Secrets & Local Config
+# ===========================
+**/appsettings.Development.json
+
+# ===========================
+# Local Dev Settings
+# ===========================
+**/Properties/launchSettings.json
+
+# ===========================
+# Rider / JetBrains IDE
+# ===========================
+.idea/
+*.sln.iml
+**/rider.project.model.nuget.info
+**/rider.project.restore.info
+
+# ===========================
+# Visual Studio
+# ===========================
+.vs/
+*.user
+*.suo
+
+# ===========================
+# NuGet
+# ===========================
+*.nupkg
+**/project.nuget.cache
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# Scaffolding Leftovers
+# ===========================
+ScaffoldingReadMe.txt
+
+.qodo/
+*.DotSettings.user
+
+

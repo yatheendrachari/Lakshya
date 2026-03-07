@@ -1,0 +1,112 @@
+@* *@
+@* @model IEnumerable<CareerPath.Models.ViewModels.CareerCatalogItemViewModel> *@
+@* *@
+@* <div class="d-flex flex-column gap-3"> *@
+@*     @foreach (var career in Model) *@
+@*     { *@
+@*         <a asp-controller="Careers" asp-action="Details" asp-route-slug="@career.Slug" class="text-decoration-none"> *@
+@*             <div class="career-card card border-0 shadow-sm rounded-3 px-4 py-3"> *@
+@*                 <div class="row align-items-center g-3"> *@
+@* *@
+@*                     <!-- ZONE 1: Icon + Title + Category --> *@
+@*                     <div class="col-12 col-md-3 d-flex align-items-center gap-3"> *@
+@*                         <div class="career-card-icon rounded-3 bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"> *@
+@*                             <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"> *@
+@*                                 <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10-2h4v2h-4V4zm10 16H4V8h16v12z"/> *@
+@*                             </svg> *@
+@*                         </div> *@
+@*                         <div> *@
+@*                             <div class="fw-bold text-dark lh-sm">@career.Name</div> *@
+@*                             <div class="small text-muted mt-1"> *@
+@*                                 <span class="badge bg-primary bg-opacity-10 text-primary fw-normal">@career.Field</span> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                     </div> *@
+@* *@
+@*                     <!-- ZONE 2: Description --> *@
+@*                     <div class="col-12 col-md-4"> *@
+@*                         <p class="text-muted small mb-0 career-card-desc">@career.Description</p> *@
+@*                     </div> *@
+@* *@
+@*                     <!-- ZONE 3: Skill Tags — ALL inside ONE div --> *@
+@*                     <div class="col-12 col-md-3 d-flex flex-wrap gap-2"> *@
+@*                         @foreach (var skill in career.RequiredSkills) *@
+@*                         { *@
+@*                             <span class="badge bg-light text-dark border fw-normal">@skill.Name</span> *@
+@*                         } *@
+@*                     </div> *@
+@* *@
+@*                     <!-- ZONE 4: Demand + Arrow --> *@
+@*                     <div class="col-12 col-md-2 d-flex align-items-center justify-content-between justify-content-md-end gap-3"> *@
+@*                         <span class="badge bg-success bg-opacity-10 text-success fw-semibold small"> *@
+@*                             ↑ @career.DemandLevel *@
+@*                         </span> *@
+@*                         <svg class="career-card-arrow text-muted flex-shrink-0" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"> *@
+@*                             <path d="M16.175 13H5q-.425 0-.713-.288T4 12q0-.425.288-.713T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375q0 .2-.063.375t-.212.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.713t.3-.712L16.175 13z"/> *@
+@*                         </svg> *@
+@*                     </div> *@
+@* *@
+@*                 </div> *@
+@*             </div> *@
+@*         </a> *@
+@*     } *@
+@* </div> *@
+
+
+@* Areas/Student/Views/Careers/Index.cshtml *@
+@model IEnumerable<CareerPath.Models.ViewModels.CareerCatalogItemViewModel>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="~/css/Careers.css" asp-append-version="true"/>
+
+@section Styles {
+  
+}
+
+<div class="cr-wrap">
+  <div class="career-list">
+    @foreach (var career in Model)
+    {
+      var demandClass = career.DemandLevel?.ToLower() == "high"   ? "ci-demand-high"
+                      : career.DemandLevel?.ToLower() == "medium" ? "ci-demand-medium"
+                      :                                              "ci-demand-low";
+
+      <a asp-controller="Careers" asp-action="Details" asp-route-slug="@career.Slug"
+         class="career-item">
+
+        <div class="ci-identity">
+          <div class="ci-icon">
+            <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10-2h4v2h-4V4zm10 16H4V8h16v12z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ci-name">@career.Name</div>
+            <div class="ci-field"><span class="ci-field-badge">@career.Field</span></div>
+          </div>
+        </div>
+
+        <div class="ci-desc">@career.Description</div>
+
+        <div class="ci-skills">
+          @foreach (var skill in career.RequiredSkills)
+          {
+            <span class="ci-skill-tag">@skill.Name</span>
+          }
+        </div>
+
+        <div class="ci-right">
+          <span class="ci-demand @demandClass">↑ @career.DemandLevel</span>
+          <svg class="ci-arrow" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M16.175 13H5q-.425 0-.713-.288T4 12q0-.425.288-.713T5 11h11.175l-4.9-4.9q-.3-.3-.288-.7t.313-.7q.3-.275.7-.288t.7.288l6.6 6.6q.15.15.213.325t.062.375q0 .2-.063.375t-.212.325l-6.6 6.6q-.275.275-.687.275T11.3 19.3q-.3-.3-.3-.713t.3-.712L16.175 13z"/>
+          </svg>
+        </div>
+
+      </a>
+    }
+  </div>
+</div>
+
+@section Scripts {
+  <script src="~/js/Careers.js" asp-append-version="true"></script>
+}

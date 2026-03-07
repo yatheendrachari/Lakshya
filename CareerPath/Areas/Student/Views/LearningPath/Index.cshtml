@@ -1,0 +1,283 @@
+@* Areas/Student/Views/LearningPath/Index.cshtml *@
+@model CareerPath.Models.ViewModels.LearningPathPageViewModel
+
+@{ ViewData["title"] = "Learning Path"; }
+
+@section Styles {
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="~/css/LearningPath.css" asp-append-version="true"/>
+}
+
+<div class="lp-wrap">
+
+  @* ── TempData error banner ─────────────────────────────────────────── *@
+  @if (TempData["Error"] is string errMsg)
+  {
+    <div class="lp-alert lp-alert-error">⚠ @errMsg</div>
+  }
+
+  @* ── PAGE HEADER ───────────────────────────────────────────────────── *@
+  <p class="lp-eyebrow">Step 3 of 4</p>
+  <h1 class="lp-heading">Your <em>Learning</em> Roadmap</h1>
+  <p class="lp-sub">Pick a career below — we'll generate a personalised module-by-module plan built around your skill gaps.</p>
+
+  @* ── CAREER SELECTOR ──────────────────────────────────────────────── *@
+  <p class="selector-label">Select a career to generate its learning path</p>
+
+  @if (Model.CareerOptions != null && Model.CareerOptions.Any())
+  {
+    <div class="selector-row">
+      @for (int i = 0; i < Model.CareerOptions.Count; i++)
+      {
+        var opt      = Model.CareerOptions[i];
+        var isActive = opt.Slug == Model.SelectedSlug;
+        <form class="sel-form" method="post"
+              asp-action="Generate"
+              asp-controller="LearningPath"
+              asp-area="Student">
+          @Html.AntiForgeryToken()
+          <input type="hidden" name="slug" value="@opt.Slug"/>
+          <button type="submit" class="sel-card @(isActive ? "active" : "")">
+            <span class="sel-rank">#@(i + 1) Match</span>
+            <span class="sel-pct">@((int)Math.Round(opt.MatchPercentage))<span>%</span></span>
+            <span class="sel-name">@opt.Name</span>
+          </button>
+        </form>
+      }
+    </div>
+  }
+  else
+  {
+    <div class="no-path">
+      <div class="empty-icon">🎯</div>
+      <h4>No career predictions found</h4>
+      <p>Please complete onboarding to see your career matches here.</p>
+    </div>
+  }
+
+  @* ── GENERATED CONTENT ────────────────────────────────────────────── *@
+  @if (Model.GeneratedPath?.learning_path_model != null)
+  {
+    var path    = Model.GeneratedPath.learning_path_model;
+    var modules = path.learning_modules ?? new List<LearningModules>();
+
+    @* ── PATH META HEADER ─────────────────────────────────────────── *@
+    <div class="path-meta">
+      <div class="path-meta-left">
+        <div class="path-meta-career">@(path.selected_career ?? "Learning Path")</div>
+        <div class="path-meta-field">@(path.field ?? string.Empty)</div>
+      </div>
+      <div class="path-pills">
+        <span class="pill pill-total">@path.total_concepts concepts</span>
+        @if (path.Summary != null)
+        {
+          @if (path.Summary.high_priority_modules > 0)
+          {
+            <span class="pill pill-high">@path.Summary.high_priority_modules High Priority</span>
+          }
+          @if (path.Summary.medium_priority_modules > 0)
+          {
+            <span class="pill pill-med">@path.Summary.medium_priority_modules Medium Priority</span>
+          }
+          @if (!string.IsNullOrWhiteSpace(path.Summary.start_with))
+          {
+            <span class="pill pill-start">▶ Start with @path.Summary.start_with</span>
+          }
+        }
+      </div>
+    </div>
+
+    @if (modules.Any())
+    {
+      @* ── ROADMAP ─────────────────────────────────────────────────── *@
+      <div class="roadmap-section">
+        <p class="rm-section-title">Learning Roadmap</p>
+        <div class="roadmap" id="roadmap">
+
+          @for (int mi = 0; mi < modules.Count; mi++)
+          {
+            var mod      = modules[mi];
+            var priority = (mod.priority ?? "low").Trim().ToLower();
+            var pClass   = priority == "high"   ? "priority-high"
+                         : priority == "medium" ? "priority-medium"
+                         :                        "priority-low";
+            var pBadge   = priority == "high"   ? "p-high"
+                         : priority == "medium" ? "p-medium"
+                         :                        "p-low";
+            var pLabel   = priority == "high"   ? "High"
+                         : priority == "medium" ? "Medium"
+                         :                        "Low";
+            var res = mod.Resources;
+
+            @* 1-2 preview chips from first available resource of each type *@
+            var preview = new List<(string icon, string title, string url)>();
+            if (res?.Videos?.Any()   == true && preview.Count < 2 && !string.IsNullOrWhiteSpace(res.Videos.First().title))
+              preview.Add(("🎬", res.Videos.First().title!,   res.Videos.First().url   ?? "#"));
+            if (res?.Courses?.Any()  == true && preview.Count < 2 && !string.IsNullOrWhiteSpace(res.Courses.First().title))
+              preview.Add(("📚", res.Courses.First().title!,  res.Courses.First().url  ?? "#"));
+            if (res?.Articles?.Any() == true && preview.Count < 2 && !string.IsNullOrWhiteSpace(res.Articles.First().title))
+              preview.Add(("📰", res.Articles.First().title!, res.Articles.First().url ?? "#"));
+            if (res?.Papers?.Any()   == true && preview.Count < 2 && !string.IsNullOrWhiteSpace(res.Papers.First().title))
+              preview.Add(("📄", res.Papers.First().title!,   res.Papers.First().url   ?? "#"));
+
+            <div class="rm-module @pClass @(mi == 0 ? "active" : "")"
+                 id="module-@mi"
+                 onclick="selectModule(@mi)">
+              <div class="rm-card">
+
+                <div class="rm-card-top">
+                  <div class="rm-concept">@(mod.concept ?? "Unnamed Module")</div>
+                  <div class="rm-badges">
+                    <span class="rm-priority @pBadge">@pLabel</span>
+                    @if (!string.IsNullOrWhiteSpace(mod.level))
+                    {
+                      <span class="rm-level">@mod.level</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="rm-meta">
+                  @if (!string.IsNullOrWhiteSpace(mod.maps_to_gap))
+                  {
+                    <span>🎯 <strong>Gap:</strong> @mod.maps_to_gap</span>
+                  }
+                  @if (mod.total_resources > 0)
+                  {
+                    <span>📦 @mod.total_resources resource@(mod.total_resources == 1 ? "" : "s")</span>
+                  }
+                </div>
+
+                @if (preview.Any())
+                {
+                  <div class="rm-resources-mini">
+                    @foreach (var (icon, title, url) in preview)
+                    {
+                      <a href="@url" target="_blank" rel="noopener"
+                         class="rm-res-chip" onclick="event.stopPropagation()">
+                        <span class="chip-icon">@icon</span>
+                        <span>@title</span>
+                      </a>
+                    }
+                  </div>
+                }
+
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+
+      @* ── RESOURCES SECTION ────────────────────────────────────────── *@
+      <div class="res-section" id="resourcesSection">
+        <p class="res-section-title">Resourcess</p>
+        <div class="res-active-label" id="resLabel">
+          Module: <span>@(modules.First().concept ?? "—")</span>
+        </div>
+        @* intentionally empty — JS populates on load and on module click *@
+        <div class="res-columns" id="resColumns"></div>
+      </div>
+    }
+    else
+    {
+      <div class="no-path">
+        <div class="empty-icon">📭</div>
+        <h4>No modules returned</h4>
+        <p>The API returned an empty learning path. Please try selecting the career again.</p>
+      </div>
+    }
+  }
+  else if (!string.IsNullOrEmpty(Model.SelectedSlug))
+  {
+    <div class="no-path">
+      <div class="empty-icon">⚙️</div>
+      <h4>Generation failed</h4>
+      <p>Could not build a learning path for this career. Please try again.</p>
+    </div>
+  }
+  else if (Model.CareerOptions?.Any() == true)
+  {
+    <div class="no-path" id="promptCard">
+      <div class="empty-icon">👆</div>
+      <h4>Select a career above</h4>
+      <p>Click any career card to instantly generate your personalised learning roadmap.</p>
+    </div>
+  }
+
+</div>
+
+@section Scripts {
+
+  @* ── Inject module data for JS consumption ─────────────────────────── *@
+  @if (Model.GeneratedPath?.learning_path_model?.learning_modules?.Any() == true)
+  {
+    var modules = Model.GeneratedPath.learning_path_model.learning_modules;
+    <script id="modulesData" type="application/json">
+      @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        modules.Select(m => new
+        {
+          concept  = m.concept  ?? string.Empty,
+          resource = m.Resources == null ? null : new
+          {
+            videos = (m.Resources.Videos ?? new List<Videos>()).Select(v => new
+            {
+              title       = v.title       ?? string.Empty,
+              url         = v.url         ?? string.Empty,
+              description = v.description ?? string.Empty,
+              thumbnail   = v.thumbnail   ?? string.Empty,
+              source      = v.source      ?? string.Empty,
+              channel     = v.channel     ?? string.Empty,
+              views       = v.views,
+              isFresh     = v.is_fresh     ?? false,
+              publishedAt = v.published_at ?? string.Empty
+            }),
+            courses = (m.Resources.Courses ?? new List<Course>()).Select(c => new
+            {
+              title       = c.title       ?? string.Empty,
+              url         = c.url         ?? string.Empty,
+              description = c.description ?? string.Empty,
+              source      = c.source      ?? string.Empty
+            }),
+            articles = (m.Resources.Articles ?? new List<Article>()).Select(a => new
+            {
+              title       = a.title       ?? string.Empty,
+              url         = a.url         ?? string.Empty,
+              description = a.description ?? string.Empty,
+              source      = a.source      ?? string.Empty
+            }),
+            papers = (m.Resources.Papers ?? new List<Paper>()).Select(p => new
+            {
+              title       = p.title       ?? string.Empty,
+              url         = p.url         ?? string.Empty,
+              description = p.description ?? string.Empty,
+              source      = p.source      ?? string.Empty
+            })
+          }
+        }),
+        new System.Text.Json.JsonSerializerOptions
+        {
+          PropertyNamingPolicy   = System.Text.Json.JsonNamingPolicy.CamelCase,
+          ReferenceHandler       = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles,
+          DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never
+        }
+      ))
+    </script>
+  }
+  else
+  {
+    @* always emit element so JS never throws on getElementById *@
+    <script id="modulesData" type="application/json">[]</script>
+  }
+
+  <script src="~/js/LearningPath.js" asp-append-version="true"></script>
+
+  @* auto-trigger first module resources on page load *@
+  @if (Model.GeneratedPath?.learning_path_model?.learning_modules?.Any() == true)
+  {
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof selectModule === 'function') selectModule(0);
+      });
+    </script>
+  }
+}
