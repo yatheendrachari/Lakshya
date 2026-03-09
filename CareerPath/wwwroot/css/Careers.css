@@ -1,157 +1,568 @@
-/* ================================================================
-   CAREERS — dark theme
-   Sits on top of Bootstrap grid. Overrides all Bootstrap visual/
-   colour utilities with the unified dark system.
-================================================================ */
+/* ============================================================
+   careers.css  —  Lakshya Career Detail + Gap Analysis Panel
+   Brand palette: #325d88 (navy) · #29abe0 (sky) · #93c54b (green)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
+
 :root {
-    --bg:        #09090f;
-    --bg2:       #0f0f1a;
-    --bg3:       #14141f;
-    --surface:   #1a1a2e;
-    --surface2:  #1e1e32;
-    --border:    rgba(255,255,255,.07);
-    --border2:   rgba(255,255,255,.12);
-    --text:      #e8e8f0;
-    --muted:     #7070a0;
-    --muted2:    #9090c0;
-    --accent:    #6c63ff;
-    --accent2:   #a78bfa;
-    --green:     #34d399;
-    --green-bg:  rgba(52,211,153,.1);
-    --red:       #ff5e5e;
-    --red-bg:    rgba(255,94,94,.1);
-    --amber:     #fbbf24;
-    --amber-bg:  rgba(251,191,36,.1);
-    --r:         .75rem;
-    --r2:        1.1rem;
-    --f-display: 'Syne', sans-serif;
-    --f-body:    'DM Sans', sans-serif;
-    --ease:      cubic-bezier(.4,0,.2,1);
+    --brand-navy:   #325d88;
+    --brand-sky:    #29abe0;
+    --brand-green:  #93c54b;
+    --grad-brand:   linear-gradient(90deg, #325d88, #29abe0);
+    --surface:      #f8fafc;
+    --card-bg:      #ffffff;
+    --text-main:    #1a2332;
+    --text-muted:   #64748b;
+    --border:       #e2e8f0;
+    --radius:       .75rem;
+    --shadow-sm:    0 2px 8px rgba(50,93,136,.07);
+    --shadow-md:    0 8px 32px rgba(50,93,136,.12);
 }
 
-/* base */
-body { background: var(--bg) !important; color: var(--text) !important; font-family: var(--f-body); }
-.container,.container-fluid,.container-sm,.container-md,.container-lg,.container-xl { background: transparent !important; }
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-main);
+    background: var(--surface);
+    -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4,h5,h6 { font-family: 'Sora', sans-serif; }
 
-/* text utilities */
-.text-dark      { color: var(--text)    !important; }
-.text-muted     { color: var(--muted)   !important; }
-.text-primary   { color: var(--accent2) !important; }
-.text-success   { color: var(--green)   !important; }
-.text-warning   { color: var(--amber)   !important; }
-.text-danger    { color: var(--red)     !important; }
-.text-info      { color: var(--muted2)  !important; }
-.text-secondary { color: var(--muted2)  !important; }
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
+.breadcrumb {
+    font-size: .83rem;
+    background: transparent;
+    padding: 0;
+}
+.breadcrumb-item a {
+    color: var(--brand-sky);
+    text-decoration: none;
+    font-weight: 500;
+}
+.breadcrumb-item a:hover { text-decoration: underline; }
+.breadcrumb-item.active { color: var(--text-muted); }
+.breadcrumb-item + .breadcrumb-item::before { color: var(--border); }
 
-/* card */
-.card { background: var(--surface) !important; border-color: var(--border2) !important; color: var(--text) !important; border-radius: var(--r2) !important; }
-.card-body { background: transparent !important; }
+/* ============================================================
+   CAREER HEADER
+   ============================================================ */
+.career-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.75rem;
+}
 
-/* borders */
-.border,.border-end,.border-bottom { border-color: var(--border2) !important; }
-.border-primary { border-color: rgba(108,99,255,.35) !important; }
-.border-success { border-color: rgba(52,211,153,.35)  !important; }
-.border-warning { border-color: rgba(251,191,36,.35)  !important; }
-.border-danger  { border-color: rgba(255,94,94,.35)   !important; }
-.card.border-danger  { background: rgba(255,94,94,.04)  !important; border-color: rgba(255,94,94,.3)  !important; }
-.card.border-warning { background: rgba(251,191,36,.04) !important; border-color: rgba(251,191,36,.3) !important; }
-.card.border-primary { background: rgba(108,99,255,.05) !important; border-color: rgba(108,99,255,.3) !important; }
+.career-icon-wrap {
+    font-size: 2rem;
+    padding: .85rem;
+    border-radius: var(--radius);
+    background: rgba(50,93,136,.07);
+    line-height: 1;
+    flex-shrink: 0;
+}
 
-/* badges */
-.badge { font-family: var(--f-body); font-weight: 600; border-radius: 99px !important; }
-.bg-primary.bg-opacity-10,.badge.bg-primary { background: rgba(108,99,255,.15) !important; color: var(--accent2) !important; }
-.bg-success.bg-opacity-10,.badge.bg-success { background: var(--green-bg)      !important; color: var(--green)   !important; }
-.bg-warning.bg-opacity-10,.badge.bg-warning { background: var(--amber-bg)      !important; color: var(--amber)   !important; }
-.bg-danger.bg-opacity-10, .badge.bg-danger  { background: var(--red-bg)        !important; color: var(--red)     !important; }
-.bg-info.bg-opacity-10,   .badge.bg-info    { background: rgba(34,211,238,.1)  !important; color: #22d3ee        !important; }
-.bg-secondary.bg-opacity-10,.badge.bg-secondary,.badge.bg-light { background: var(--surface2) !important; color: var(--muted2) !important; border-color: var(--border2) !important; }
-.badge.text-primary   { color: var(--accent2) !important; }
-.badge.text-success   { color: var(--green)   !important; }
-.badge.text-warning   { color: var(--amber)   !important; }
-.badge.text-danger    { color: var(--red)     !important; }
-.badge.text-secondary { color: var(--muted2)  !important; }
-.badge.bg-danger.bg-opacity-10.text-danger   { background: var(--red-bg)   !important; color: var(--red)   !important; }
-.badge.bg-warning.bg-opacity-10.text-warning { background: var(--amber-bg) !important; color: var(--amber) !important; }
-.badge.bg-success.bg-opacity-10.text-success { background: var(--green-bg) !important; color: var(--green) !important; }
+.career-name {
+    font-family: 'Sora', sans-serif;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 800;
+    margin-bottom: .25rem;
+    color: var(--text-main);
+}
 
-/* list group */
-.list-group-item,.list-group-item.bg-transparent { background: transparent !important; border-color: var(--border2) !important; color: var(--text) !important; }
+.career-field-line {
+    font-size: .88rem;
+    color: var(--text-muted);
+    margin-bottom: .65rem;
+}
 
-/* progress */
-.progress { background: var(--border2) !important; border-radius: 99px; }
-.progress-bar.bg-primary { background: var(--accent) !important; }
+/* Tag badges */
+.career-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: .3rem .75rem;
+    border-radius: 99px;
+    font-size: .78rem;
+    font-weight: 600;
+    border: 1px solid;
+    letter-spacing: .01em;
+}
+.tag-field    { background: rgba(50,93,136,.07); color: var(--brand-navy);  border-color: rgba(50,93,136,.2); }
+.tag-demand   { background: rgba(147,197,75,.1);  color: #4a7c17;             border-color: rgba(147,197,75,.3); }
+.tag-exp      { background: rgba(245,158,11,.08); color: #b45309;             border-color: rgba(245,158,11,.3); }
+.tag-work     { background: rgba(41,171,224,.08); color: #0369a1;             border-color: rgba(41,171,224,.3); }
 
-/* breadcrumb */
-.breadcrumb-item a { color: var(--accent2); text-decoration: none; }
-.breadcrumb-item a:hover { color: var(--text); }
-.breadcrumb-item.active { color: var(--muted); }
-.breadcrumb-item+.breadcrumb-item::before { color: var(--muted); }
+/* ============================================================
+   QUICK STATS CARDS
+   ============================================================ */
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-align: center;
+    transition: box-shadow .2s, transform .2s;
+}
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+.stat-card-value {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: .2rem;
+    line-height: 1.2;
+}
+.stat-card-label {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    font-weight: 600;
+    color: var(--text-muted);
+}
 
-/* buttons */
-.btn-primary { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; font-family: var(--f-body); font-weight: 600; border-radius: var(--r) !important; transition: opacity .2s, transform .15s; }
-.btn-primary:hover { opacity: .85 !important; transform: translateY(-1px); }
-.btn-outline-secondary { border-color: var(--border2) !important; color: var(--muted2) !important; background: transparent !important; font-family: var(--f-body); border-radius: var(--r) !important; font-size: .8rem; }
-.btn-outline-secondary:hover { background: var(--surface2) !important; color: var(--text) !important; border-color: var(--accent2) !important; }
+/* ============================================================
+   SECTION HEADINGS  (◆ About This Career etc.)
+   ============================================================ */
+.career-section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: .98rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: .9rem;
+}
+.career-section-title .dot {
+    color: var(--brand-sky);
+    font-size: 1rem;
+}
 
-/* misc */
-.alert-warning { background: var(--amber-bg) !important; border-color: rgba(251,191,36,.3) !important; color: var(--amber) !important; }
-.btn-close { filter: invert(1) opacity(.5); }
-hr { border-color: var(--border2); opacity: 1; }
-.bg-white,.bg-light { background: var(--surface) !important; }
-.rounded-3.bg-primary.bg-opacity-10 { background: rgba(108,99,255,.15) !important; color: var(--accent2) !important; }
-.spinner-border-sm { color: #fff; }
+/* ============================================================
+   RESPONSIBILITIES LIST
+   ============================================================ */
+.responsibility-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .65rem;
+    padding: .65rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .9rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+.responsibility-item:last-child { border-bottom: none; }
+.resp-check {
+    color: var(--brand-green);
+    font-size: .95rem;
+    margin-top: .1rem;
+    flex-shrink: 0;
+}
 
-/* ================================================================
-   CATALOG — Index.cshtml
-================================================================ */
-.careers-index-wrap { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
-.careers-eyebrow { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent2); margin-bottom: .4rem; }
-.careers-title { font-family: var(--f-display); font-size: 1.9rem; font-weight: 800; margin-bottom: .3rem; }
-.careers-sub { color: var(--muted); font-size: .9rem; margin-bottom: 2rem; }
+/* ============================================================
+   SKILLS GRID
+   ============================================================ */
+.skill-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .9rem;
+    transition: box-shadow .2s;
+}
+.skill-card:hover { box-shadow: var(--shadow-sm); }
 
-.career-card { background: var(--surface) !important; border: 1.5px solid var(--border2) !important; box-shadow: none !important; border-radius: var(--r2) !important; transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease); }
-.career-card:hover { border-color: rgba(108,99,255,.4) !important; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(108,99,255,.12) !important; }
-.career-card-icon { width: 44px; height: 44px; background: rgba(108,99,255,.2) !important; color: var(--accent2) !important; border-radius: var(--r) !important; flex-shrink: 0; }
-.career-card-desc { color: var(--muted) !important; font-size: .82rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.career-card-arrow { color: var(--muted) !important; transition: color .18s; }
-.career-card:hover .career-card-arrow { color: var(--accent2) !important; }
-.fw-bold.text-dark.lh-sm { color: var(--text) !important; }
+.skill-card-name {
+    font-size: .83rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.skill-card-level-text {
+    font-size: .72rem;
+    color: var(--text-muted);
+    margin-top: .35rem;
+}
+.skill-progress {
+    height: 5px;
+    border-radius: 99px;
+    background: var(--border);
+    overflow: hidden;
+    margin: .45rem 0 0;
+}
+.skill-progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--grad-brand);
+    transition: width .6s ease;
+}
 
-/* ================================================================
-   DETAIL — Details.cshtml
-================================================================ */
-.career-detail-wrap { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 6rem; }
-.career-detail-wrap h1.fw-bold { font-family: var(--f-display); font-size: 1.75rem; font-weight: 800; color: var(--text); }
-.career-detail-wrap h5.fw-semibold { font-family: var(--f-display); font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted2); padding-bottom: .6rem; border-bottom: 1px solid var(--border2); margin-bottom: 1rem !important; }
-.career-detail-wrap .lh-lg { color: var(--muted) !important; line-height: 1.75; }
-.career-detail-wrap .row.g-3 .card { background: var(--surface2) !important; }
-.career-detail-wrap .row.g-3 .fs-4.fw-bold { font-family: var(--f-display); }
-.career-detail-wrap .row.g-2 .card { background: var(--surface2) !important; }
-.career-detail-wrap .row.g-2 .small.fw-semibold { color: var(--text); }
-.career-detail-wrap .card.border.px-3.py-2 { background: var(--surface2) !important; }
-.career-detail-wrap .card.border.px-3.py-2 .fw-semibold { color: var(--text); }
-.career-detail-wrap .d-flex > .text-muted.fs-5 { color: var(--muted) !important; }
-.career-detail-wrap .col-lg-3 .sticky-top .card { background: var(--surface) !important; }
+/* ============================================================
+   CAREER PROGRESSION TIMELINE
+   ============================================================ */
+.progression-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+.progression-step {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .55rem 1rem;
+    text-align: center;
+    min-width: 110px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.progression-step:hover {
+    border-color: var(--brand-sky);
+    box-shadow: var(--shadow-sm);
+}
+.progression-years {
+    font-size: .7rem;
+    color: var(--text-muted);
+    margin-bottom: .25rem;
+}
+.progression-title {
+    font-family: 'Sora', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.progression-arrow {
+    color: var(--brand-sky);
+    font-size: 1.1rem;
+    opacity: .6;
+}
 
-/* ================================================================
-   GAP ANALYSIS — _GapAnalysisResult.cshtml
-================================================================ */
-.small.fw-bold.text-danger  { color: var(--red)   !important; }
-.small.fw-bold.text-warning { color: var(--amber) !important; }
-.small.fw-bold.text-success { color: var(--green) !important; }
-.card p.text-muted { color: var(--muted) !important; }
-.border-bottom.py-1 { border-color: var(--border2) !important; }
-.card.border-primary.border-opacity-50 h5.fw-bold { font-family: var(--f-display); color: var(--text); }
-.card.border.bg-opacity-10 { background: var(--surface2) !important; }
-.row.g-2 .card.border.text-center.p-2 { background: var(--surface2) !important; padding: .5rem !important; }
+/* ============================================================
+   COMPANIES
+   ============================================================ */
+.company-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: .38rem .85rem;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: .82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    transition: border-color .2s, color .2s, background .2s;
+}
+.company-badge:hover {
+    border-color: var(--brand-sky);
+    color: var(--brand-navy);
+    background: rgba(41,171,224,.05);
+}
 
-/* ================================================================
+/* ============================================================
+   RELATED CAREERS
+   ============================================================ */
+.related-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .9rem;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    text-decoration: none;
+    transition: border-color .2s, color .2s, background .2s, transform .2s;
+}
+.related-btn:hover {
+    border-color: var(--brand-sky);
+    color: var(--brand-navy);
+    background: rgba(41,171,224,.05);
+    transform: translateX(2px);
+}
+
+/* ============================================================
+   GAP ANALYSIS PANEL (right sidebar)
+   ============================================================ */
+
+/* CTA card (before analysis) */
+.gap-cta-card {
+    background: var(--card-bg);
+    border: 1.5px solid rgba(50,93,136,.25);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: .85rem;
+}
+.gap-cta-icon { font-size: 2.25rem; margin-bottom: .5rem; }
+.gap-cta-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: .35rem;
+}
+.gap-cta-sub {
+    font-size: .82rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+.gap-benefit-list { list-style: none; padding: 0; margin: 0; }
+.gap-benefit-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: .55rem;
+    font-size: .82rem;
+    color: var(--text-muted);
+    margin-bottom: .6rem;
+    line-height: 1.5;
+}
+
+.btn-run-gap {
+    width: 100%;
+    background: var(--grad-brand);
+    border: none;
+    color: #fff;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: .92rem;
+    padding: .7rem;
+    border-radius: .5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(50,93,136,.28);
+    transition: opacity .2s, transform .2s;
+}
+.btn-run-gap:hover { opacity: .9; transform: translateY(-1px); }
+.btn-run-gap:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+.gap-tip-card {
+    background: rgba(41,171,224,.05);
+    border: 1px solid rgba(41,171,224,.18);
+    border-radius: var(--radius);
+    padding: .75rem 1rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+.gap-tip-card a { color: var(--brand-sky); font-weight: 600; text-decoration: none; }
+.gap-tip-card a:hover { text-decoration: underline; }
+
+/* ============================================================
+   GAP ANALYSIS RESULT  (_GapAnalysisResult.cshtml)
+   ============================================================ */
+.gap-result {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+}
+
+/* Readiness ring card */
+.gap-readiness-card {
+    background: linear-gradient(135deg, #1a2d45 0%, #325d88 100%);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+    color: #fff;
+}
+.gap-readiness-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .7;
+    margin-bottom: .75rem;
+}
+.gap-readiness-ring {
+    position: relative;
+    display: inline-block;
+    margin-bottom: .65rem;
+}
+.gap-readiness-num {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-family: 'Sora', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+}
+.gap-readiness-sub {
+    font-size: .75rem;
+    opacity: .75;
+    line-height: 1.4;
+}
+
+/* Summary row */
+.gap-summary-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .5rem;
+}
+.gap-summary-cell {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    padding: .65rem .5rem;
+    text-align: center;
+}
+.gap-summary-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: .2rem;
+}
+.gsn-green { color: #22c55e; }
+.gsn-amber { color: #f59e0b; }
+.gsn-red   { color: #ef4444; }
+
+.gap-summary-tag {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* Section headings inside gap result */
+.gap-section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin-bottom: .55rem;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+}
+.gst-red   { color: #ef4444; }
+.gst-amber { color: #f59e0b; }
+.gst-green { color: #22c55e; }
+
+/* Gap item cards */
+.gap-item-card {
+    border-radius: .5rem;
+    border: 1px solid;
+    padding: .7rem .75rem;
+    margin-bottom: .4rem;
+    background: var(--card-bg);
+}
+.gi-red   { border-color: rgba(239,68,68,.25);  background: rgba(239,68,68,.03); }
+.gi-amber { border-color: rgba(245,158,11,.25); background: rgba(245,158,11,.03); }
+
+.gap-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .35rem;
+    gap: .4rem;
+}
+.gap-item-name {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--text-main);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.gap-item-val {
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .18rem .45rem;
+    border-radius: 99px;
+    border: 1px solid;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.giv-red   { color: #ef4444; background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.2); }
+.giv-amber { color: #f59e0b; background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.2); }
+
+.gap-item-advice {
+    font-size: .75rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+/* Strengths rows */
+.strength-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .45rem 0;
+    border-bottom: 1px solid var(--border);
+}
+.strength-row:last-child { border-bottom: none; }
+.strength-name {
+    font-size: .8rem;
+    color: var(--text-muted);
+}
+.strength-badge {
+    font-size: .68rem;
+    font-weight: 600;
+    padding: .18rem .5rem;
+    border-radius: 99px;
+    background: rgba(34,197,94,.09);
+    color: #16a34a;
+    border: 1px solid rgba(34,197,94,.22);
+}
+
+/* ============================================================
+   LAYOUT — left/right columns
+   ============================================================ */
+.careers-layout {
+    min-height: calc(100vh - 120px);
+}
+
+/* Left panel */
+.career-detail-col {
+    padding-right: 1.75rem;
+    border-right: 1px solid var(--border);
+}
+
+/* Right sticky panel */
+.gap-panel-col {
+    padding-left: 1.5rem;
+}
+.gap-panel-sticky {
+    position: sticky;
+    top: 80px;
+}
+
+/* ============================================================
+   ALERT
+   ============================================================ */
+.alert-warning {
+    border-radius: var(--radius);
+    font-size: .88rem;
+}
+
+/* ============================================================
    RESPONSIVE
-================================================================ */
-@media (max-width: 992px) {
-    .career-detail-wrap .border-end { border: none !important; border-bottom: 1px solid var(--border2) !important; padding-bottom: 2rem; margin-bottom: 2rem; padding-right: 0 !important; }
+   ============================================================ */
+@media (max-width: 991px) {
+    .career-detail-col {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+    .gap-panel-col {
+        padding-left: 0;
+    }
+    .gap-panel-sticky {
+        position: static;
+    }
 }
-@media (max-width: 640px) {
-    .careers-title { font-size: 1.5rem; }
-    .career-detail-wrap, .careers-index-wrap { padding: 1.5rem 1rem 4rem; }
+
+@media (max-width: 576px) {
+    .career-name { font-size: 1.5rem; }
+    .stat-card-value { font-size: 1rem; }
+    .progression-step { min-width: 90px; }
 }
