@@ -1,18 +1,18 @@
 
 @model IEnumerable<CareerPath.Models.ViewModels.CareerCatalogItemViewModel>
 @section Styles {
-    <link rel="stylesheet" href="~/css/careers.css" />
+    <link rel="stylesheet" href="~/css/Careers.css" />
 }
 <div class="d-flex flex-column gap-3">
     @foreach (var career in Model)
     {
         <a asp-controller="Careers" asp-action="Details" asp-route-slug="@career.Slug" class="text-decoration-none">
-            <div class="career-card card border-0 shadow-sm rounded-3 px-4 py-3">
+            <div class="career-card border shadow-sm rounded-3 px-4 py-3">
                 <div class="row align-items-center g-3">
 
                     <!-- ZONE 1: Icon + Title + Category -->
                     <div class="col-12 col-md-3 d-flex align-items-center gap-3">
-                        <div class="career-card-icon rounded-3 bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0">
+                        <div class="career-card-icon rounded-3 bg-dark text-white d-flex align-items-center justify-content-center flex-shrink-0">
                             <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10-2h4v2h-4V4zm10 16H4V8h16v12z"/>
                             </svg>
@@ -34,7 +34,7 @@
                     <div class="col-12 col-md-3 d-flex flex-wrap gap-2">
                         @foreach (var skill in career.RequiredSkills)
                         {
-                            <span class="badge bg-light text-dark border fw-normal">@skill.Name</span>
+                            <span class="badge bg-dark text-light border fw-normal">@skill.Name</span>
                         }
                     </div>
 
